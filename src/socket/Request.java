@@ -2,7 +2,7 @@ package socket;
 
 public class Request {
     private RequestType type;
-    private String Data;
+    private String data;
 
     public Request(){
         this.type = null;
