@@ -6,10 +6,10 @@ public class User {
     private String username;
     private String password;
     private String displayName;
-    private Boolean online;
+    private boolean online;
 
     //default constructor
-    public User(){
+    public User() {
         this.username = "";
         this.password = "";
         this.displayName = "";
@@ -17,7 +17,7 @@ public class User {
     }
 
     //constructor that sets all attributes
-    public User(String username, String password, String displayName, Boolean online){
+    public User(String username, String password, String displayName, boolean online) {
         this.username = username;
         this.password = password;
         this.displayName = displayName;
@@ -25,14 +25,37 @@ public class User {
     }
 
     //getters and setters for all attributes
-    public String getUsername() {return username;}
-    public String getPassword() {return password;}
-    public String getDisplayName() {return displayName;}
-    public Boolean getOnline() {return online;}
-    public void setUsername(String username){this.username = username;}
-    public void setPassword(String password){this.password = password;}
-    public void setDisplayName(String displayName){this.displayName = displayName;}
-    public void setOnline(Boolean online){this.online = online;}
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public boolean getOnline() {
+        return online;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
 
     //equals() method
     @Override
