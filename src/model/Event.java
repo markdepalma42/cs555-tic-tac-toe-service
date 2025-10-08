@@ -12,7 +12,6 @@ package model;
  * This class is serialized and exchanged between client and server to maintain synchronized
  * game state across the system.
  */
-
 //Class definition
 public class Event {
    
