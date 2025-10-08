@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Objects;
-
 //Class definition
 public class Event {
 
@@ -91,7 +89,7 @@ public class Event {
         if (o == null || getClass() != o.getClass()) return false;
         //cast the object and compare the unique attribute
         Event event = (Event) o;
-        return Objects.equals(eventId, event.eventId);
+        return eventId == event.eventId;
 
     }
 
