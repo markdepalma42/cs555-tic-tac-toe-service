@@ -5,9 +5,7 @@ public class GamingResponse extends Response {
     private boolean active;
 
     public GamingResponse() {
-        super();
-        this.move = 0;
-        this.active = false;
+        this(0, false);
     }
 
     public GamingResponse(int move, boolean active) {
