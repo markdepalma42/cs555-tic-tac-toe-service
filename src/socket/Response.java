@@ -22,11 +22,11 @@ public class Response {
         return message;
     }
 
-    public void setType(ResponseStatus status) {
+    public void setStatus(ResponseStatus status) {
         this.status = status;
     }
 
-    public void setData(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
