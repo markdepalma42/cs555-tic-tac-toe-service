@@ -5,7 +5,7 @@ package socket;
  * This class serves as the standard response format from server to client,
  * indicating the success or failure of requested operations and providing
  * descriptive messages for user feedback.
- *
+ * <p>
  * The server creates Response objects to communicate back to the client, and
  * clients always expect Response objects (or their subclasses) when receiving
  * server communications. This base class is extended by specialized response
@@ -66,7 +66,7 @@ public class Response {
 
     /**
      * Sets the status of this response.
-     * Note: Method name appears to be "setType" but sets the ResponseStatus.
+     * Method name appears to be "setType" but sets the ResponseStatus.
      * Consider renaming to setStatus for consistency if needed.
      *
      * @param status the ResponseStatus to set for this response
@@ -77,7 +77,7 @@ public class Response {
 
     /**
      * Sets the descriptive message for this response.
-     * Note: Method name appears to be "setData" but sets the message.
+     * Method name appears to be "setData" but sets the message.
      * Consider renaming to setMessage for consistency if needed.
      *
      * @param message the descriptive message to set for this response
