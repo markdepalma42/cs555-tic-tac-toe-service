@@ -4,7 +4,7 @@ package socket;
  * Models all client requests sent to the server in the TicTacToe game system.
  * This class serves as the standard communication format between client and server,
  * encapsulating the request type and associated data for all game operations.
- *
+ * <p>
  * Clients must create Request objects to communicate with the server, and the server
  * always expects Request objects when receiving client communications. The request
  * type determines the operation to be performed, while the data field contains
@@ -82,7 +82,6 @@ public class Request {
         this.data = data;
     }
 
-    // enumeration for RequestType
     /**
      * Enumeration defining all possible request types that clients can send to the server.
      * Each request type corresponds to specific game functionality and has defined data requirements.
