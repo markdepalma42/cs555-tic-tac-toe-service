@@ -15,11 +15,13 @@ public class GamingResponse extends Response{
      * An integer representing the last move made by the current player's opponent.
      * The value ranges from 0-8, representing the cells of the TicTacToe board
      * from top to bottom, left to right:
+     * <pre>
      * 0 | 1 | 2
      * --+---+--
      * 3 | 4 | 5
      * --+---+--
      * 6 | 7 | 8
+     * <pre/>
      */
     private int move;
 
