@@ -4,11 +4,12 @@ public class Request {
     private RequestType type;
     private String data;
 
-    public Request(){
+    public Request() {
         this.type = null;
         this.data = null;
     }
-    public Request(RequestType type, String data){
+
+    public Request(RequestType type, String data) {
         this.type = type;
         this.data = data;
     }

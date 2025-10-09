@@ -4,12 +4,12 @@ public class Response {
     private ResponseStatus status;
     private String message;
 
-    public Response(){
+    public Response() {
         this.status = null;
         this.message = null;
     }
 
-    public Response(ResponseStatus status, String message){
+    public Response(ResponseStatus status, String message) {
         this.status = status;
         this.message = message;
     }
@@ -22,13 +22,15 @@ public class Response {
         return message;
     }
 
-    public void setType(ResponseStatus status) {
+    public void setStatus(ResponseStatus status) {
         this.status = status;
     }
 
-    public void setData(String message) { this.message = message; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-    public enum ResponseStatus{
+    public enum ResponseStatus {
         SUCCESS,
         FAILURE
     }
