@@ -26,11 +26,11 @@ public class Request {
      */
     private String data;
 
-    /**
+  /**
      * Default constructor that creates a Request with null type and data.
      * Used for initialization before setting specific request parameters.
      */
-    public Request(){
+    public Request() {
         this.type = null;
         this.data = null;
     }
