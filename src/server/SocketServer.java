@@ -4,26 +4,23 @@ package server;
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
  * and creates dedicated ServerHandler threads to manage each client session.
- *
+ * <p>
  * As the primary entry point for the TicTacToe server, this class handles the
  * initialization of the server environment and coordinates the acceptance of
  * multiple client connections concurrently. Each connected client is assigned
  * to a separate ServerHandler thread for independent request processing.
- *
+ * <p>
  * The server listens on a configurable port (default 5000) and maintains
  * continuous availability for client connections until shutdown.
  */
 public class SocketServer {
 
-    // Port number the server listens on
     /**
      * The port number that the socket server listens on for incoming client connections.
      * This value is set during construction and remains constant for the server instance.
      */
     private final int PORT;
 
-
-    // Main method to start the server
     /**
      * The main entry point that launches the TicTacToe server application.
      * Creates a SocketServer instance, performs setup initialization, and begins
@@ -37,7 +34,6 @@ public class SocketServer {
         server.startAcceptingRequest();
     }
 
-    // Default constructor that uses the default port number 5000
     /**
      * Default constructor that initializes the server with the default port number 5000.
      * Delegates to the parameterized constructor to set the constant PORT value.
@@ -46,7 +42,6 @@ public class SocketServer {
         this(5000);
     }
 
-    // Parameterized constructor that sets a custom port number
     /**
      * Parameterized constructor that initializes the server with a custom port number.
      * Allows configuration of the specific port the server will listen on for connections.
@@ -57,31 +52,28 @@ public class SocketServer {
         this.PORT = port;
     }
 
-    // Method to set up the server for connection (to be implemented later)
     /**
      * Performs initial server setup and configuration.
      * When implemented, this method will initialize the server socket, configure
      * connection parameters, and prepare the server environment for accepting clients.
-     *
+     * <p>
      * Current implementation is empty - will contain server socket initialization logic later.
      */
     public void setup() {
         // Empty for now - will initialize server socket later
     }
 
-    // Method to start accepting client connections (to be implemented later)
     /**
      * Starts the main server loop to accept incoming client connections.
      * When implemented, this method will run continuously, accepting new client
      * connections and spawning ServerHandler threads for each connected client.
-     *
+     * <p>
      * Current implementation is empty - will handle socket connection logic later.
      */
     public void startAcceptingRequest() {
         // Empty for now - will handle socket connection logic later
     }
 
-    // Getter for the PORT attribute
     /**
      * Returns the port number that the server is configured to listen on.
      *

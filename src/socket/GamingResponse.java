@@ -4,7 +4,7 @@ package socket;
  * Models the server's response to a REQUEST_MOVE request in the TicTacToe game.
  * This subclass of Response provides information about the opponent's last move
  * and the current active status of the game session.
- *
+ * <p>
  * GamingResponse objects are sent from the server to the client during gameplay
  * to synchronize game state and inform the client about the opponent's actions
  * and connection status. This enables real-time gameplay updates between players.
@@ -15,11 +15,13 @@ public class GamingResponse extends Response{
      * An integer representing the last move made by the current player's opponent.
      * The value ranges from 0-8, representing the cells of the TicTacToe board
      * from top to bottom, left to right:
+     * <pre>
      * 0 | 1 | 2
      * --+---+--
      * 3 | 4 | 5
      * --+---+--
      * 6 | 7 | 8
+     * </pre>
      */
     private int move;
 
