@@ -66,23 +66,19 @@ public class Response {
 
     /**
      * Sets the status of this response.
-     * Method name appears to be "setType" but sets the ResponseStatus.
-     * Consider renaming to setStatus for consistency if needed.
      *
      * @param status the ResponseStatus to set for this response
      */
-    public void setType(ResponseStatus status) {
+    public void setStatus(ResponseStatus status) {
         this.status = status;
     }
 
     /**
      * Sets the descriptive message for this response.
-     * Method name appears to be "setData" but sets the message.
-     * Consider renaming to setMessage for consistency if needed.
      *
      * @param message the descriptive message to set for this response
      */
-    public void setData(String message) { this.message = message; }
+    public void setMessage(String message) { this.message = message; }
 
     /**
      * Enumeration defining the possible status values for server responses.

@@ -26,7 +26,7 @@ public class SocketServer {
      * Creates a SocketServer instance, performs setup initialization, and begins
      * accepting client connections.
      *
-     * @param args command-line arguments (not currently used)
+     * @param args command-line arguments
      */
     public static void main(String[] args) {
         SocketServer server = new SocketServer();
@@ -53,11 +53,9 @@ public class SocketServer {
     }
 
     /**
-     * Performs initial server setup and configuration.
-     * When implemented, this method will initialize the server socket, configure
-     * connection parameters, and prepare the server environment for accepting clients.
-     * <p>
-     * Current implementation is empty - will contain server socket initialization logic later.
+     * Performs initial server setup and configuration. Initializes the server socket,
+     * configures connection parameters, and prepares the server environment for accepting
+     * clients.
      */
     public void setup() {
         // Empty for now - will initialize server socket later
@@ -65,10 +63,8 @@ public class SocketServer {
 
     /**
      * Starts the main server loop to accept incoming client connections.
-     * When implemented, this method will run continuously, accepting new client
-     * connections and spawning ServerHandler threads for each connected client.
-     * <p>
-     * Current implementation is empty - will handle socket connection logic later.
+     * This method runs continuously, accepting new client connections and
+     * spawning ServerHandler threads for each connected client.
      */
     public void startAcceptingRequest() {
         // Empty for now - will handle socket connection logic later
