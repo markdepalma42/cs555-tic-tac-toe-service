@@ -1,20 +1,18 @@
 package model;
 
-//User Class definition
 /**
  * Models a user who plays the TicTacToe game. This class represents player accounts
  * used for registration, login, and tracking online status in the gaming system.
- *
+ * <p>
  * User objects are used for first-time registration and login processes. The username
  * attribute serves as the unique identifier for every player in the game system.
- *
+ * <p>
  * This model class maps directly to the database table 'User', with all class attributes
  * having corresponding table columns. User objects are serialized and exchanged between
  * client and server for authentication and status synchronization.
  */
 public class User {
 
-    //Class attributes
     /**
      * A string representation of the user's username, serving as the unique identifier
      * for the player in the game system. Maps to the 'username' column in the User table.
@@ -39,7 +37,6 @@ public class User {
      */
     private boolean online;
 
-    //default constructor
     /**
      * Default constructor that creates a User with empty/default values.
      * Used for initialization before populating with actual user data.
@@ -51,7 +48,6 @@ public class User {
         this.online = false;
     }
 
-    //constructor that sets all attributes
     /**
      * Creates a complete User with all attributes. Typically used when creating
      * new user accounts or when retrieving user data from the database.
@@ -73,7 +69,6 @@ public class User {
      *
      * @return the user's username
      */
-    //getters and setters for all attributes
     public String getUsername() {
         return username;
     }
@@ -143,7 +138,6 @@ public class User {
         this.online = online;
     }
 
-    //equals() method
     /**
      * Compares this user to the specified object for equality. Two users are
      * considered equal if they have the same username, as this is the unique
