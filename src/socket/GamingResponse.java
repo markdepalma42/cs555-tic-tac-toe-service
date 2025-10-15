@@ -84,11 +84,5 @@ public class GamingResponse extends Response{
      */
     public void setActive(boolean active){ this.active = active;}
 
-    public void setMove(int move) {
-        this.move = move;
-    }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 }
