@@ -12,7 +12,6 @@ package model;
  * This class is serialized and exchanged between client and server to maintain synchronized
  * game state across the system.
  */
-
 public class Event {
 
     /**
@@ -206,7 +205,6 @@ public class Event {
         //cast the object and compare the unique attribute
         Event event = (Event) o;
         return eventId == event.eventId;
-
     }
 
     /**
@@ -250,5 +248,4 @@ public class Event {
          */
         ABORTED
     }
-
 }

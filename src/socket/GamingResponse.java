@@ -9,7 +9,7 @@ package socket;
  * to synchronize game state and inform the client about the opponent's actions
  * and connection status. This enables real-time gameplay updates between players.
  */
-public class GamingResponse extends Response{
+public class GamingResponse extends Response {
 
     /**
      * An integer representing the last move made by the current player's opponent.
@@ -37,10 +37,8 @@ public class GamingResponse extends Response{
      * Calls the superclass constructor and initializes move and active to
      * their default values (0 and false respectively).
      */
-    public GamingResponse(){
-        super();
-        this.move = move;
-        this.active = active;
+    public GamingResponse() {
+        this(0, false);
     }
 
     /**
@@ -50,7 +48,7 @@ public class GamingResponse extends Response{
      * @param move the integer representing the opponent's last move (0-8)
      * @param active the boolean indicating if the opponent is still active in the game
      */
-    public GamingResponse(int move, boolean active){
+    public GamingResponse(int move, boolean active) {
         super();
         this.move = move;
         this.active = active;
@@ -61,28 +59,34 @@ public class GamingResponse extends Response{
      *
      * @return an integer from 0-8 representing the cell position of the last move
      */
-    public int getMove(){ return move; }
+    public int getMove() {
+        return move;
+    }
 
     /**
      * Returns the active status of the game session.
      *
      * @return true if the opponent is still active, false if the game has been aborted
      */
-    public boolean getActive(){ return active; }
+    public boolean getActive() {
+        return active;
+    }
 
     /**
      * Sets the opponent's last move position.
      *
      * @param move an integer from 0-8 representing the TicTacToe cell position
      */
-    public void setMove(int move){ this.move = move; }
+    public void setMove(int move) {
+        this.move = move;
+    }
 
     /**
      * Updates the active status of the game session.
      *
      * @param active true if the opponent is active, false if the game is terminated
      */
-    public void setActive(boolean active){ this.active = active;}
-
-
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }
