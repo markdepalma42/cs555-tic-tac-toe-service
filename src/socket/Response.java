@@ -30,7 +30,7 @@ public class Response {
      * Default constructor that creates a Response with null status and message.
      * Used for initialization before setting specific response values.
      */
-    public Response(){
+    public Response() {
         this.status = null;
         this.message = null;
     }
@@ -41,7 +41,7 @@ public class Response {
      * @param status the response status indicating success or failure of the operation
      * @param message the descriptive message providing details about the response
      */
-    public Response(ResponseStatus status, String message){
+    public Response(ResponseStatus status, String message) {
         this.status = status;
         this.message = message;
     }
@@ -78,13 +78,15 @@ public class Response {
      *
      * @param message the descriptive message to set for this response
      */
-    public void setMessage(String message) { this.message = message; }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     /**
      * Enumeration defining the possible status values for server responses.
      * These statuses indicate the overall outcome of client request processing.
      */
-    public enum ResponseStatus{
+    public enum ResponseStatus {
         /**
          * Indicates the client request was processed successfully without errors.
          * The requested operation completed as expected and the client can proceed normally.
@@ -97,5 +99,4 @@ public class Response {
          */
         FAILURE
     }
-
 }

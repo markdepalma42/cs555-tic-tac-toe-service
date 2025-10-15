@@ -155,6 +155,5 @@ public class User {
         //cast the object and compare the unique attribute
         User user = (User) o;
         return username.equals(user.username);
-
     }
 }

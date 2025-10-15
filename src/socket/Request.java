@@ -26,7 +26,7 @@ public class Request {
      */
     private String data;
 
-  /**
+    /**
      * Default constructor that creates a Request with null type and data.
      * Used for initialization before setting specific request parameters.
      */
@@ -41,7 +41,7 @@ public class Request {
      * @param type the type of request being made
      * @param data the serialized data associated with the request, or null if not needed
      */
-    public Request(RequestType type, String data){
+    public Request(RequestType type, String data) {
         this.type = type;
         this.data = data;
     }
@@ -153,5 +153,4 @@ public class Request {
          */
         COMPLETE_GAME
     }
-
 }
