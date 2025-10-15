@@ -37,10 +37,8 @@ public class GamingResponse extends Response{
      * Calls the superclass constructor and initializes move and active to
      * their default values (0 and false respectively).
      */
-    public GamingResponse(){
-        super();
-        this.move = move;
-        this.active = active;
+    public GamingResponse() {
+        this(0, false);
     }
 
     /**
