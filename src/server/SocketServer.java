@@ -47,8 +47,13 @@ public class SocketServer {
      * Allows configuration of the specific port the server will listen on for connections.
      *
      * @param port the custom port number for the server to listen on
+     * @throws IllegalArgumentException if the port is less than 0
      */
     public SocketServer(int port) {
+        if (port < 0) {
+            throw new IllegalArgumentException("Port number cannot be negative");
+        }
+
         this.PORT = port;
     }
 

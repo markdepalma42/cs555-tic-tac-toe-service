@@ -31,8 +31,7 @@ public class Response {
      * Used for initialization before setting specific response values.
      */
     public Response() {
-        this.status = null;
-        this.message = null;
+        this(null, null);
     }
 
     /**

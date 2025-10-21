@@ -42,10 +42,7 @@ public class User {
      * Used for initialization before populating with actual user data.
      */
     public User() {
-        this.username = "";
-        this.password = "";
-        this.displayName = "";
-        this.online = false;
+        this(null, null, null, false);
     }
 
     /**
