@@ -31,8 +31,7 @@ public class Request {
      * Used for initialization before setting specific request parameters.
      */
     public Request() {
-        this.type = null;
-        this.data = null;
+        this(null, null);
     }
 
     /**
