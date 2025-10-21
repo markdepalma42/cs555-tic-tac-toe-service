@@ -50,12 +50,7 @@ public class Event {
      * Used for initialization before populating with database values.
      */
     public Event() {
-        this.eventId = 0;
-        this.sender = "";
-        this.opponent = "";
-        this.status = null;
-        this.turn = "";
-        this.move = 0;
+        this(0, null, null, null, null, 0);
     }
 
     /**
