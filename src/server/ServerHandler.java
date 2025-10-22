@@ -1,4 +1,7 @@
 package server;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -13,11 +16,30 @@ package server;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+    // TODO: TASK 2 declare socket and username
+    /**
+     * Input stream for receiving data from the client
+     */
+    private DataInputStream dataInputStream;
+
+    /**
+     * Output stream for sending data to the client.
+     */
+    private DataOutputStream dataOutputStream;
+
     /**
      * Default constructor that creates a ServerHandler instance.
      */
     public ServerHandler() {
-        // Empty for now - will set up I/O streams later
+    // TODO: TASK 2 initialize socket and username, please also update lines 37 and 38 to whatever the socket parameter name is
+
+        try {
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e)
+        {
+            System.err.println("Error can not establish input or output stream variables");
+        }
     }
 
     /**
