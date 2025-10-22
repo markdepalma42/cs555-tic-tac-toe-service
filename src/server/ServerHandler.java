@@ -31,7 +31,7 @@ public class ServerHandler extends Thread {
      * Default constructor that creates a ServerHandler instance.
      */
     public ServerHandler() {
-    // TODO: TASK 2 initialize socket and username, please also update lines 38 and 39 to whatever the socket parameter name is
+    // TODO: TASK 2 initialize socket and username, please also update lines 37 and 38 to whatever the socket parameter name is
 
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
