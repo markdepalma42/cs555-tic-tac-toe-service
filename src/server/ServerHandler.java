@@ -1,6 +1,6 @@
 package server;
-// Test change to verify Git commit
-
+import java.net.Socket;
+//Temporary test edit to verify Git
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -15,11 +15,19 @@ package server;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
+    private Socket socket;           // Stores the client connection
+    private String currentUsername;  // Stores the client's username
     /**
      * Default constructor that creates a ServerHandler instance.
+
+     * @param socket The socket representing the client connection.
+     * @param username The username of the connected client.
      */
-    public ServerHandler() {
-        // Empty for now - will set up I/O streams later
+
+    public ServerHandler(Socket socket, String username) {
+        this.socket = socket;
+        this.currentUsername = username;
     }
 
     /**
@@ -39,5 +47,13 @@ public class ServerHandler extends Thread {
      */
     public void close() {
         // Empty for now - will close sockets and streams later
+    }
+    // Optional getters for later use
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 }
