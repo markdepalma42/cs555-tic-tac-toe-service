@@ -1,4 +1,8 @@
 package server;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -14,10 +18,31 @@ package server;
  */
 public class ServerHandler extends Thread {
     /**
+     * Input stream for receiving data from the client
+     */
+    private DataInputStream dataInputStream;
+
+    /**
+     * Output stream for sending data to the client.
+     */
+    private DataOutputStream dataOutputStream;
+
+    /**
+     * The socket connection to the client.
+     */
+    private Socket clientSocket;
+
+    /**
      * Default constructor that creates a ServerHandler instance.
      */
     public ServerHandler() {
-        // Empty for now - will set up I/O streams later
+        try {
+            this.dataInputStream = new DataInputStream(clientSocket.getInputStream());
+            this.dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+        } catch (IOException e)
+        {
+            System.err.println("Error can not establish input or output stream variables");
+        }
     }
 
     /**
