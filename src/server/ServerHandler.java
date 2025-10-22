@@ -26,19 +26,17 @@ public class ServerHandler extends Thread {
      * Output stream for sending data to the client.
      */
     private DataOutputStream dataOutputStream;
-
-    /**
-     * The socket connection to the client.
-     */
-    private Socket clientSocket;
+    // TODO: TASK 2 declare socket and username
 
     /**
      * Default constructor that creates a ServerHandler instance.
      */
     public ServerHandler() {
+    // TODO: TASK 2 initialize socket and username, please also update lines 38 and 39 to whatever the socket parameter name is
+
         try {
-            this.dataInputStream = new DataInputStream(clientSocket.getInputStream());
-            this.dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e)
         {
             System.err.println("Error can not establish input or output stream variables");
