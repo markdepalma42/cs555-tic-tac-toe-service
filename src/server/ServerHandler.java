@@ -1,4 +1,6 @@
 package server;
+// Test change to verify Git commit
+
 
 /**
  * Handles I/O communication between the server and a single client connection.
