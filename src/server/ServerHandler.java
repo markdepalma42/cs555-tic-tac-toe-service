@@ -2,7 +2,6 @@ package server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -17,6 +16,7 @@ import java.net.Socket;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+    // TODO: TASK 2 declare socket and username
     /**
      * Input stream for receiving data from the client
      */
@@ -26,7 +26,6 @@ public class ServerHandler extends Thread {
      * Output stream for sending data to the client.
      */
     private DataOutputStream dataOutputStream;
-    // TODO: TASK 2 declare socket and username
 
     /**
      * Default constructor that creates a ServerHandler instance.
