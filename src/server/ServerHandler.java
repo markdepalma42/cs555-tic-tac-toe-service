@@ -1,6 +1,6 @@
 package server;
+
 import java.net.Socket;
-//Temporary test edit to verify Git
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -14,17 +14,21 @@ import java.net.Socket;
  * This class is responsible for processing all request types from clients, including
  * login, registration, game invitations, and gameplay moves.
  */
+
 public class ServerHandler extends Thread {
-
-    private Socket socket;           // Stores the client connection
-    private String currentUsername;  // Stores the client's username
+    /** Stores the client connection
+     */
+    private final Socket socket;
     /**
-     * Default constructor that creates a ServerHandler instance.
+     * Stores the client's username
+     */
+    private final String currentUsername;
 
+/**
+     * Default constructor that creates a ServerHandler instance.
      * @param socket The socket representing the client connection.
      * @param username The username of the connected client.
      */
-
     public ServerHandler(Socket socket, String username) {
         this.socket = socket;
         this.currentUsername = username;
