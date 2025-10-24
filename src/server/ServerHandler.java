@@ -1,5 +1,7 @@
 package server;
 
+import model.Event;
+
 /**
  * Handles I/O communication between the server and a single client connection.
  * This class extends Thread to enable concurrent handling of multiple client connections.
@@ -13,6 +15,13 @@ package server;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
+    /**
+     * Static Event variable initialized with default values and move set to -1.
+     * This represents a default event indicating no move has been made.
+     */
+    public static Event defaultEvent = new Event(0, null, null, null, null, -1);
+
     /**
      * Default constructor that creates a ServerHandler instance.
      */
