@@ -1,6 +1,11 @@
 package server;
 
 import java.net.Socket;
+import model.Event;
+import socket.Request;
+import socket.Response;
+import socket.GamingResponse;
+import socket.Response.ResponseStatus;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -15,6 +20,12 @@ import java.net.Socket;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
+    /**
+     * Static Event variable initialized with default values and move set to -1.
+     * This represents the current event state, starting with default values indicating no move has been made.
+     */
+    public static Event event = new Event(0, null, null, null, null, -1);
 
     /**
      * Stores the client connection.
@@ -138,20 +149,6 @@ public class ServerHandler extends Thread {
             return new GamingResponse(-1, false);
         }
     }
-
-    /**
-     * Gets the current username for the client connected to this ServerHandler.
-     * This needs to be implemented based on how you track user sessions.
-     *
-     * @return the username of the current client
-     */
-    private String getCurrentUsername() {
-        // TODO: Implement this method based on your authentication/session management
-        // For now, return a placeholder - you'll need to replace this with actual implementation
-        // You might store the username when the user logs in, or get it from the connection context
-        return "current_user"; // Placeholder - implement properly
-    }
-
 
     /**
      * The main execution method that runs in a separate thread to handle client communication.
