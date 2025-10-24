@@ -1,5 +1,7 @@
 package server;
 
+import java.net.Socket;
+
 /**
  * Handles I/O communication between the server and a single client connection.
  * This class extends Thread to enable concurrent handling of multiple client connections.
@@ -13,11 +15,26 @@ package server;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
+    /**
+     * Stores the client connection.
+     */
+    private final Socket socket;
+
+    /**
+     * Stores the client's username.
+     */
+    private final String currentUsername;
+
     /**
      * Default constructor that creates a ServerHandler instance.
+     *
+     * @param socket The socket representing the client connection.
+     * @param username The username of the connected client.
      */
-    public ServerHandler() {
-        // Empty for now - will set up I/O streams later
+    public ServerHandler(Socket socket, String username) {
+        this.socket = socket;
+        this.currentUsername = username;
     }
 
     /**
@@ -36,6 +53,23 @@ public class ServerHandler extends Thread {
      * when a client disconnects or when the server needs to terminate the connection.
      */
     public void close() {
-        // Empty for now - will close sockets and streams later
+    }
+
+    /**
+     * Returns the socket associated with this connection.
+     *
+     * @return the Socket object for this connection
+     */
+    public Socket getSocket() {
+        return socket;
+    }
+
+    /**
+     * Returns the current username associated with this connection.
+     *
+     * @return the current username as a String
+     */
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 }
