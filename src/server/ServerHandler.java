@@ -92,13 +92,13 @@ public class ServerHandler extends Thread {
         String currentUser = getCurrentUsername();
 
         // Check to see if the last move was not made by the same user
-        if (defaultEvent.getTurn() != null && defaultEvent.getTurn().equals(currentUser)) {
+        if (event.getTurn() != null && event.getTurn().equals(currentUser)) {
             return new Response(ResponseStatus.FAILURE, "Cannot make consecutive moves. Wait for opponent's move.");
         }
 
         // Set the move and turn attribute of the static variable event
-        defaultEvent.setMove(move);
-        defaultEvent.setTurn(currentUser);
+        event.setMove(move);
+        event.setTurn(currentUser);
 
         // Return a standard Response with SUCCESS status and appropriate message
         return new Response(ResponseStatus.SUCCESS, "Move " + move + " received successfully");
@@ -114,7 +114,7 @@ public class ServerHandler extends Thread {
     private GamingResponse handleRequestMove() {
         try {
             // Get the move from the static variable event
-            int move = defaultEvent.getMove();
+            int move = event.getMove();
             GamingResponse response;
 
             // Check if there is a valid move made by the opponent, else set the move as -1
@@ -127,7 +127,7 @@ public class ServerHandler extends Thread {
             }
 
             // Delete the move once it is sent to the opponent
-            defaultEvent.setMove(-1);
+            event.setMove(-1);
             return response;
 
         } catch (Exception e) {
