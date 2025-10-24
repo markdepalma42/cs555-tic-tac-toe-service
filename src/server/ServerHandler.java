@@ -22,9 +22,10 @@ public class ServerHandler extends Thread {
 
     /**
      * Static Event variable initialized with default values and move set to -1.
-     * This represents a default event indicating no move has been made.
+     * This represents the current event state, starting with default values indicating no
+     * move has been made.
      */
-    public static Event defaultEvent = new Event(0, null, null, null, null, -1);
+    public static Event event = new Event(0, null, null, null, null, -1);
 
     /**
      * Default constructor that creates a ServerHandler instance.
