@@ -4,7 +4,6 @@ import model.Event;
 import socket.Request;
 import socket.Response;
 import socket.GamingResponse;
-import socket.Request.RequestType;
 import socket.Response.ResponseStatus;
 
 /**
