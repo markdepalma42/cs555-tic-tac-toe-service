@@ -1,5 +1,11 @@
 package server;
 
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.SocketException;
+
 /**
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
@@ -16,6 +22,11 @@ package server;
 public class SocketServer {
 
     /**
+     * the object of ServerSocket class for creating the socket server
+     */
+    private ServerSocket serverSocket;
+
+    /**
      * The port number that the socket server listens on for incoming client connections.
      * This value is set during construction and remains constant for the server instance.
      */
@@ -30,7 +41,7 @@ public class SocketServer {
      */
     public static void main(String[] args) {
         SocketServer server = new SocketServer();
-        server.setup();
+        server.setup(8080);
         server.startAcceptingRequest();
     }
 
@@ -62,8 +73,46 @@ public class SocketServer {
      * configures connection parameters, and prepares the server environment for accepting
      * clients.
      */
-    public void setup() {
+    public void setup(int port) {
         // Empty for now - will initialize server socket later
+        try {
+            serverSocket = new ServerSocket(port);
+            InetAddress localHost = InetAddress.getLocalHost();
+
+            // Log server information
+            System.out.println("Server started on port " + port);
+            System.out.println("Server started successfully.");
+            System.out.println("Hostname: " + localHost.getHostName());
+            System.out.println("Host Address: " + localHost.getHostAddress());
+            System.out.println("Port Number: " + serverSocket.getLocalPort());
+
+
+        }
+
+        catch (BindException e) {
+            System.err.println("Port " + port + " is already in use. Please choose another port.");
+        }
+
+        catch (SocketException e) {
+            System.err.println("Socket error occurred: " + e.getMessage());
+        }
+
+        catch (SecurityException e) {
+            System.err.println("Security manager doesn't allow this operation: " + e.getMessage());
+        }
+
+        catch (IllegalArgumentException e) {
+            System.err.println("Invalid port number: " + port);
+        }
+
+        catch (IOException e) {
+            System.err.println("I/O error while opening the socket: " + e.getMessage());
+        }
+
+        catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
+        }
+
     }
 
     /**
