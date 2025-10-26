@@ -22,7 +22,7 @@ import java.net.SocketException;
 public class SocketServer {
 
     /**
-     * the object of ServerSocket class for creating the socket server
+     * The object of ServerSocket class for creating the socket server.
      */
     private ServerSocket serverSocket;
 
@@ -41,7 +41,7 @@ public class SocketServer {
      */
     public static void main(String[] args) {
         SocketServer server = new SocketServer();
-        server.setup(8080);
+        server.setup();
         server.startAcceptingRequest();
     }
 
@@ -50,6 +50,7 @@ public class SocketServer {
      * Delegates to the parameterized constructor to set the constant PORT value.
      */
     public SocketServer() {
+
         this(5000);
     }
 
@@ -73,46 +74,25 @@ public class SocketServer {
      * configures connection parameters, and prepares the server environment for accepting
      * clients.
      */
-    public void setup(int port) {
-        // Empty for now - will initialize server socket later
+    public void setup() {
+
         try {
-            serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(this.PORT);
             InetAddress localHost = InetAddress.getLocalHost();
 
             // Log server information
-            System.out.println("Server started on port " + port);
+            System.out.println("Server started on port " + this.PORT);
             System.out.println("Server started successfully.");
             System.out.println("Hostname: " + localHost.getHostName());
             System.out.println("Host Address: " + localHost.getHostAddress());
             System.out.println("Port Number: " + serverSocket.getLocalPort());
-
-
-        }
-
-        catch (BindException e) {
-            System.err.println("Port " + port + " is already in use. Please choose another port.");
-        }
-
-        catch (SocketException e) {
+        } catch (BindException e) {
+            System.err.println("Port " + this.PORT + " is already in use. Please choose another port.");
+        } catch (SocketException e) {
             System.err.println("Socket error occurred: " + e.getMessage());
-        }
-
-        catch (SecurityException e) {
-            System.err.println("Security manager doesn't allow this operation: " + e.getMessage());
-        }
-
-        catch (IllegalArgumentException e) {
-            System.err.println("Invalid port number: " + port);
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             System.err.println("I/O error while opening the socket: " + e.getMessage());
         }
-
-        catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getClass().getSimpleName() + " - " + e.getMessage());
-        }
-
     }
 
     /**
