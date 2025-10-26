@@ -5,6 +5,8 @@ import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
@@ -25,6 +27,9 @@ public class SocketServer {
      * The object of ServerSocket class for creating the socket server.
      */
     private ServerSocket serverSocket;
+
+    //Logger instance
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
 
     /**
      * The port number that the socket server listens on for incoming client connections.
@@ -81,11 +86,12 @@ public class SocketServer {
             InetAddress localHost = InetAddress.getLocalHost();
 
             // Log server information
-            System.out.println("Server started on port " + this.PORT);
-            System.out.println("Server started successfully.");
-            System.out.println("Hostname: " + localHost.getHostName());
-            System.out.println("Host Address: " + localHost.getHostAddress());
-            System.out.println("Port Number: " + serverSocket.getLocalPort());
+            LOGGER.info("Server started on port {}", this.PORT);
+            LOGGER.error("Port {} is already in use. Please choose another port.", this.PORT, e);
+            LOGGER.info("Hostname: {}", localHost.getHostName());
+            LOGGER.info("Host Address: {}", localHost.getHostAddress());
+            LOGGER.info("Port Number: {}", serverSocket.getLocalPort());
+
         } catch (BindException e) {
             System.err.println("Port " + this.PORT + " is already in use. Please choose another port.");
         } catch (SocketException e) {
