@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.IOException;
 
-
 /**
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
@@ -22,7 +21,7 @@ import java.io.IOException;
  */
 public class SocketServer {
     /**
-     * logger to output responses
+     * Logger to output responses.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
 
