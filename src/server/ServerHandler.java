@@ -1,7 +1,11 @@
 package server;
+
+import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -16,9 +20,19 @@ import java.io.IOException;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
-    // TODO: TASK 2 declare socket and username
+
     /**
-     * Input stream for receiving data from the client
+     * Stores the client connection.
+     */
+    private final Socket socket;
+
+    /**
+     * Stores the client's username.
+     */
+    private final String currentUsername;
+
+    /**
+     * Input stream for receiving data from the client.
      */
     private DataInputStream dataInputStream;
 
@@ -28,17 +42,25 @@ public class ServerHandler extends Thread {
     private DataOutputStream dataOutputStream;
 
     /**
-     * Default constructor that creates a ServerHandler instance.
+     * logger for server handler responses
      */
-    public ServerHandler() {
-    // TODO: TASK 2 initialize socket and username, please also update lines 37 and 38 to whatever the socket parameter name is
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerHandler.class);
+
+    /**
+     * Default constructor that creates a ServerHandler instance.
+     *
+     * @param socket The socket representing the client connection.
+     * @param username The username of the connected client.
+     */
+    public ServerHandler(Socket socket, String username) {
+        this.socket = socket;
+        this.currentUsername = username;
 
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e)
-        {
-            System.err.println("Error can not establish input or output stream variables");
+        } catch (IOException e){
+            LOGGER.error("Error can not establish input or output stream variables", e);
         }
     }
 
@@ -58,6 +80,23 @@ public class ServerHandler extends Thread {
      * when a client disconnects or when the server needs to terminate the connection.
      */
     public void close() {
-        // Empty for now - will close sockets and streams later
+    }
+
+    /**
+     * Returns the socket associated with this connection.
+     *
+     * @return the Socket object for this connection
+     */
+    public Socket getSocket() {
+        return socket;
+    }
+
+    /**
+     * Returns the current username associated with this connection.
+     *
+     * @return the current username as a String
+     */
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 }
