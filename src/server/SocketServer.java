@@ -1,5 +1,12 @@
 package server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.net.Socket;
+import java.net.ServerSocket;
+import java.io.IOException;
+
+
 /**
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
@@ -14,12 +21,21 @@ package server;
  * continuous availability for client connections until shutdown.
  */
 public class SocketServer {
+    /**
+     * logger to output responses
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
 
     /**
      * The port number that the socket server listens on for incoming client connections.
      * This value is set during construction and remains constant for the server instance.
      */
     private final int PORT;
+
+    /**
+     * The server socket that listens for incoming client connections.
+     */
+    private ServerSocket serverSocket;
 
     /**
      * The main entry point that launches the TicTacToe server application.
@@ -63,7 +79,13 @@ public class SocketServer {
      * clients.
      */
     public void setup() {
-        // Empty for now - will initialize server socket later
+        try {
+            serverSocket = new ServerSocket(PORT);
+            LOGGER.info("Server started successfully on port {}", PORT);
+        } catch (IOException e) {
+            LOGGER.error("Failed to start server on port {}", PORT, e);
+            throw new RuntimeException("Unable to initialize server socket", e);
+        }
     }
 
     /**
@@ -72,7 +94,26 @@ public class SocketServer {
      * spawning ServerHandler threads for each connected client.
      */
     public void startAcceptingRequest() {
-        // Empty for now - will handle socket connection logic later
+        try {
+            // Player 1 connections
+            LOGGER.info("player 1 is connecting....");
+            Socket player1Socket = serverSocket.accept();
+
+            ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
+            player1Handler.start();
+
+            // Player 2 connections
+            LOGGER.info("player 2 is connecting....");
+            Socket player2Socket = serverSocket.accept();
+
+            ServerHandler player2Handler = new ServerHandler(player2Socket, "Player2");
+            player2Handler.start();
+
+            LOGGER.info("Both players connected!");
+
+        } catch (IOException e) {
+            LOGGER.error("Error accepting client connections", e);
+        }
     }
 
     /**
