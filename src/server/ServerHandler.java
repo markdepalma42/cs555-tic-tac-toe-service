@@ -59,7 +59,7 @@ public class ServerHandler extends Thread {
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        } catch (IOException e){
+        } catch (IOException e) {
             LOGGER.error("Error can not establish input or output stream variables", e);
         }
     }
