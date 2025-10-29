@@ -79,13 +79,7 @@ public class SocketServer {
      * clients.
      */
     public void setup() {
-        try {
-            serverSocket = new ServerSocket(PORT);
-            LOGGER.info("Server started successfully on port {}", PORT);
-        } catch (IOException e) {
-            LOGGER.error("Failed to start server on port {}", PORT, e);
-            throw new RuntimeException("Unable to initialize server socket", e);
-        }
+        // Empty for now - will initialize server socket later
     }
 
     /**
