@@ -2,9 +2,10 @@ package server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.Socket;
-import java.net.ServerSocket;
+
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
@@ -94,14 +95,14 @@ public class SocketServer {
      */
     public void startAcceptingRequest() {
         try {
-            // Player 1 connections
+            // Player 1 connection
             LOGGER.info("player 1 is connecting....");
             Socket player1Socket = serverSocket.accept();
 
             ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
             player1Handler.start();
 
-            // Player 2 connections
+            // Player 2 connection
             LOGGER.info("player 2 is connecting....");
             Socket player2Socket = serverSocket.accept();
 
