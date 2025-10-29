@@ -1,6 +1,11 @@
 package server;
 
 import java.net.Socket;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -27,6 +32,21 @@ public class ServerHandler extends Thread {
     private final String currentUsername;
 
     /**
+     * Input stream for receiving data from the client.
+     */
+    private DataInputStream dataInputStream;
+
+    /**
+     * Output stream for sending data to the client.
+     */
+    private DataOutputStream dataOutputStream;
+
+    /**
+     * Logger for server handler responses.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerHandler.class);
+
+    /**
      * Default constructor that creates a ServerHandler instance.
      *
      * @param socket The socket representing the client connection.
@@ -35,6 +55,13 @@ public class ServerHandler extends Thread {
     public ServerHandler(Socket socket, String username) {
         this.socket = socket;
         this.currentUsername = username;
+
+        try {
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            LOGGER.error("Error can not establish input or output stream variables", e);
+        }
     }
 
     /**
