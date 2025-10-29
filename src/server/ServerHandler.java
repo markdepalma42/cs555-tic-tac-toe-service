@@ -1,5 +1,10 @@
 package server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.Socket;
 import model.Event;
 import socket.Request;
@@ -9,8 +14,6 @@ import socket.Response.ResponseStatus;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -27,11 +30,16 @@ import org.slf4j.LoggerFactory;
 public class ServerHandler extends Thread {
 
     /**
+     * Gson class used to do serialization
+     */
+    private final Gson gson;
+
+    /**
      * Static Event variable initialized with default values and move set to -1.
      * This represents the current event state, starting with default values indicating no move has been made.
      */
     public static Event event = new Event(0, null, null, null, null, -1);
-
+    
     /**
      * Stores the client connection.
      */
@@ -66,6 +74,7 @@ public class ServerHandler extends Thread {
     public ServerHandler(Socket socket, String username) {
         this.socket = socket;
         this.currentUsername = username;
+        this.gson = new GsonBuilder().serializeNulls().create();
 
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
