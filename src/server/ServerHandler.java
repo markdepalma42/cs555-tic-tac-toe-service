@@ -6,6 +6,8 @@ import socket.Request;
 import socket.Response;
 import socket.GamingResponse;
 import socket.Response.ResponseStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -20,6 +22,11 @@ import socket.Response.ResponseStatus;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
+    /**
+     * Logger constant for this class.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerHandler.class);
 
     /**
      * Static Event variable initialized with default values and move set to -1.
@@ -67,6 +74,7 @@ public class ServerHandler extends Thread {
                 return handleRequestMove();
             default:
                 // Return failed response if neither of the two types is sent
+                LOGGER.warn("Unsupported request type: {}", request.getType());
                 return new Response(ResponseStatus.FAILURE, "Unsupported request type: " + request.getType());
         }
     }
@@ -87,8 +95,12 @@ public class ServerHandler extends Thread {
             return handleSendMove(move);
 
         } catch (NumberFormatException e) {
+            // Add logging for invalid move format
+            LOGGER.warn("Invalid move format: {}", request.getData());
             return new Response(ResponseStatus.FAILURE, "Invalid move format: " + request.getData());
         } catch (Exception e) {
+            // Log the exception with stack trace
+            LOGGER.warn("Error processing move.", e);
             return new Response(ResponseStatus.FAILURE, "Error processing move: " + e.getMessage());
         }
     }
@@ -126,28 +138,25 @@ public class ServerHandler extends Thread {
      * @return a GamingResponse containing the opponent's move and game status
      */
     private GamingResponse handleRequestMove() {
-        try {
-            // Get the move from the static variable event
-            int move = event.getMove();
-            GamingResponse response;
+        // Get the move from the static variable event
+        int move = event.getMove();
+        GamingResponse response;
 
-            // Check if there is a valid move made by the opponent, else set the move as -1
-            if (move == -1) {
-                // No move available from opponent - create response with move = -1
-                response = new GamingResponse(-1, true);
-            } else {
-                // Valid move available - create response with the actual move
-                response = new GamingResponse(move, true);
-            }
-
-            // Delete the move once it is sent to the opponent
-            event.setMove(-1);
-            return response;
-
-        } catch (Exception e) {
-            // Return a failure response with move=-1 and active=false on error
-            return new GamingResponse(-1, false);
+        // Check if there is a valid move made by the opponent, else set the move as -1
+        if (move == -1) {
+            // No move available from opponent - create response with move = -1
+            response = new GamingResponse(-1, true);
+        } else {
+            // Valid move available - create response with the actual move
+            response = new GamingResponse(move, true);
         }
+
+        // Set the response status
+        response.setStatus(ResponseStatus.SUCCESS);
+
+        // Delete the move once it is sent to the opponent
+        event.setMove(-1);
+        return response;
     }
 
     /**
