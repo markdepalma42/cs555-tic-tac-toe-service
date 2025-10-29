@@ -24,6 +24,7 @@ import java.io.IOException;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
+
     /**
      * Gson class used to do serialization
      */
