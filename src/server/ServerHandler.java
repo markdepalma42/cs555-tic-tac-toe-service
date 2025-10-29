@@ -2,14 +2,13 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Handles I/O communication between the server and a single client connection.
