@@ -94,7 +94,7 @@ public class SocketServer {
      */
     public void startAcceptingRequest() {
         try {
-            // Player 1 connections
+            // Player 1 connection
             LOGGER.info("player 1 is connecting....");
             Socket player1Socket = serverSocket.accept();
 
