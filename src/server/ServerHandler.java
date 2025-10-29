@@ -88,6 +88,7 @@ public class ServerHandler extends Thread {
      */
     public Response handleRequest(Request request) {
         if (request == null) {
+            LOGGER.warn("Received null request");
             return new Response(ResponseStatus.FAILURE, "Request cannot be null");
         }
 
