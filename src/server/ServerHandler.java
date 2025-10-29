@@ -27,11 +27,6 @@ import org.slf4j.LoggerFactory;
 public class ServerHandler extends Thread {
 
     /**
-     * Logger constant for this class.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ServerHandler.class);
-
-    /**
      * Static Event variable initialized with default values and move set to -1.
      * This represents the current event state, starting with default values indicating no move has been made.
      */
