@@ -2,9 +2,10 @@ package server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.net.Socket;
-import java.net.ServerSocket;
+
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
