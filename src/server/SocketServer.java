@@ -1,12 +1,13 @@
 package server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.SocketException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
@@ -87,17 +88,16 @@ public class SocketServer {
 
             // Log server information
             LOGGER.info("Server started on port {}", this.PORT);
-            LOGGER.error("Port {} is already in use. Please choose another port.", this.PORT, e);
             LOGGER.info("Hostname: {}", localHost.getHostName());
             LOGGER.info("Host Address: {}", localHost.getHostAddress());
             LOGGER.info("Port Number: {}", serverSocket.getLocalPort());
 
         } catch (BindException e) {
-            System.err.println("Port " + this.PORT + " is already in use. Please choose another port.");
+            LOGGER.error("Port {} is already in use. Please choose another port.", this.PORT, e);
         } catch (SocketException e) {
-            System.err.println("Socket error occurred: " + e.getMessage());
+            LOGGER.error("Socket error occurred: ", e);
         } catch (IOException e) {
-            System.err.println("I/O error while opening the socket: " + e.getMessage());
+            LOGGER.error("I/O error while opening the socket: ", e);
         }
     }
 
