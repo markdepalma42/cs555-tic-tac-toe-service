@@ -101,7 +101,7 @@ public class SocketServer {
             ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
             player1Handler.start();
 
-            // Player 2 connections
+            // Player 2 connection
             LOGGER.info("player 2 is connecting....");
             Socket player2Socket = serverSocket.accept();
 
