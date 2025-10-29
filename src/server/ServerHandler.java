@@ -42,7 +42,7 @@ public class ServerHandler extends Thread {
     private DataOutputStream dataOutputStream;
 
     /**
-     * logger for server handler responses
+     * Logger for server handler responses.
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerHandler.class);
 
