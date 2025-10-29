@@ -1,11 +1,15 @@
 package server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.Socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -20,7 +24,11 @@ import org.slf4j.LoggerFactory;
  * login, registration, game invitations, and gameplay moves.
  */
 public class ServerHandler extends Thread {
-
+    /**
+     * Gson class used to do serialization
+     */
+    private final Gson gson;
+    
     /**
      * Stores the client connection.
      */
@@ -55,6 +63,7 @@ public class ServerHandler extends Thread {
     public ServerHandler(Socket socket, String username) {
         this.socket = socket;
         this.currentUsername = username;
+        this.gson = new GsonBuilder().serializeNulls().create();
 
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
