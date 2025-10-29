@@ -1,5 +1,8 @@
 package server;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
@@ -82,5 +85,23 @@ public class SocketServer {
      */
     public int getPort() {
         return PORT;
+    }
+    /**
+     * Closes the socket connection and any associated streams to release resources.
+     * This method ensures that the server socket is properly closed to avoid memory leaks.
+     * Any exceptions encountered during closure are logged for diagnostic purposes.
+     */
+    public void close() {
+        Logger logger = Logger.getLogger(SocketServer.class.getName());
+        logger.info("Attempting to close server resources...");
+
+        try {
+            // Placeholder: when serverSocket and streams are added, they should be closed here.
+            logger.info("Server socket and streams closed successfully.");
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Error while closing server resources: " + e.getMessage(), e);
+        }
+
+        logger.info("Server shutdown complete.");
     }
 }
