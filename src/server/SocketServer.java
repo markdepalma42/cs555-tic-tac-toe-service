@@ -1,5 +1,14 @@
 package server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.SocketException;
+
 /**
  * The main socket server controller class for the TicTacToe game server.
  * This class sets up the server socket, listens for incoming client connections,
@@ -14,6 +23,14 @@ package server;
  * continuous availability for client connections until shutdown.
  */
 public class SocketServer {
+
+    /**
+     * The object of ServerSocket class for creating the socket server.
+     */
+    private ServerSocket serverSocket;
+
+    //Logger instance
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
 
     /**
      * The port number that the socket server listens on for incoming client connections.
@@ -39,6 +56,7 @@ public class SocketServer {
      * Delegates to the parameterized constructor to set the constant PORT value.
      */
     public SocketServer() {
+
         this(5000);
     }
 
@@ -63,7 +81,24 @@ public class SocketServer {
      * clients.
      */
     public void setup() {
-        // Empty for now - will initialize server socket later
+
+        try {
+            serverSocket = new ServerSocket(this.PORT);
+            InetAddress localHost = InetAddress.getLocalHost();
+
+            // Log server information
+            LOGGER.info("Server started on port {}", this.PORT);
+            LOGGER.info("Hostname: {}", localHost.getHostName());
+            LOGGER.info("Host Address: {}", localHost.getHostAddress());
+            LOGGER.info("Port Number: {}", serverSocket.getLocalPort());
+
+        } catch (BindException e) {
+            LOGGER.error("Port {} is already in use. Please choose another port.", this.PORT, e);
+        } catch (SocketException e) {
+            LOGGER.error("Socket error occurred: ", e);
+        } catch (IOException e) {
+            LOGGER.error("I/O error while opening the socket: ", e);
+        }
     }
 
     /**
