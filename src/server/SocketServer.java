@@ -4,9 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.BindException;
 import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.SocketException;
 
 /**
@@ -25,11 +26,8 @@ import java.net.SocketException;
 public class SocketServer {
 
     /**
-     * The object of ServerSocket class for creating the socket server.
+     * Logger to output responses.
      */
-    private ServerSocket serverSocket;
-
-    //Logger instance
     private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
 
     /**
@@ -37,6 +35,11 @@ public class SocketServer {
      * This value is set during construction and remains constant for the server instance.
      */
     private final int PORT;
+
+    /**
+     * The server socket that listens for incoming client connections.
+     */
+    private ServerSocket serverSocket;
 
     /**
      * The main entry point that launches the TicTacToe server application.
@@ -107,7 +110,26 @@ public class SocketServer {
      * spawning ServerHandler threads for each connected client.
      */
     public void startAcceptingRequest() {
-        // Empty for now - will handle socket connection logic later
+        try {
+            // Player 1 connection
+            LOGGER.info("player 1 is connecting....");
+            Socket player1Socket = serverSocket.accept();
+
+            ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
+            player1Handler.start();
+
+            // Player 2 connection
+            LOGGER.info("player 2 is connecting....");
+            Socket player2Socket = serverSocket.accept();
+
+            ServerHandler player2Handler = new ServerHandler(player2Socket, "Player2");
+            player2Handler.start();
+
+            LOGGER.info("Both players connected!");
+
+        } catch (IOException e) {
+            LOGGER.error("Error accepting client connections", e);
+        }
     }
 
     /**
