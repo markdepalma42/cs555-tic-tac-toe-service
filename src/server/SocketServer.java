@@ -1,7 +1,14 @@
 package server;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.BindException;
+import java.net.InetAddress;
+import java.net.SocketException;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
@@ -19,10 +26,20 @@ import java.util.logging.Logger;
 public class SocketServer {
 
     /**
+     * Logger to output responses.
+     */
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocketServer.class);
+
+    /**
      * The port number that the socket server listens on for incoming client connections.
      * This value is set during construction and remains constant for the server instance.
      */
     private final int PORT;
+
+    /**
+     * The server socket that listens for incoming client connections.
+     */
+    private ServerSocket serverSocket;
 
     /**
      * The main entry point that launches the TicTacToe server application.
@@ -42,6 +59,7 @@ public class SocketServer {
      * Delegates to the parameterized constructor to set the constant PORT value.
      */
     public SocketServer() {
+
         this(5000);
     }
 
@@ -66,7 +84,24 @@ public class SocketServer {
      * clients.
      */
     public void setup() {
-        // Empty for now - will initialize server socket later
+
+        try {
+            serverSocket = new ServerSocket(this.PORT);
+            InetAddress localHost = InetAddress.getLocalHost();
+
+            // Log server information
+            LOGGER.info("Server started on port {}", this.PORT);
+            LOGGER.info("Hostname: {}", localHost.getHostName());
+            LOGGER.info("Host Address: {}", localHost.getHostAddress());
+            LOGGER.info("Port Number: {}", serverSocket.getLocalPort());
+
+        } catch (BindException e) {
+            LOGGER.error("Port {} is already in use. Please choose another port.", this.PORT, e);
+        } catch (SocketException e) {
+            LOGGER.error("Socket error occurred: ", e);
+        } catch (IOException e) {
+            LOGGER.error("I/O error while opening the socket: ", e);
+        }
     }
 
     /**
@@ -75,7 +110,26 @@ public class SocketServer {
      * spawning ServerHandler threads for each connected client.
      */
     public void startAcceptingRequest() {
-        // Empty for now - will handle socket connection logic later
+        try {
+            // Player 1 connection
+            LOGGER.info("player 1 is connecting....");
+            Socket player1Socket = serverSocket.accept();
+
+            ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
+            player1Handler.start();
+
+            // Player 2 connection
+            LOGGER.info("player 2 is connecting....");
+            Socket player2Socket = serverSocket.accept();
+
+            ServerHandler player2Handler = new ServerHandler(player2Socket, "Player2");
+            player2Handler.start();
+
+            LOGGER.info("Both players connected!");
+
+        } catch (IOException e) {
+            LOGGER.error("Error accepting client connections", e);
+        }
     }
 
     /**
@@ -86,22 +140,5 @@ public class SocketServer {
     public int getPort() {
         return PORT;
     }
-    /**
-     * Closes the socket connection and any associated streams to release resources.
-     * This method ensures that the server socket is properly closed to avoid memory leaks.
-     * Any exceptions encountered during closure are logged for diagnostic purposes.
-     */
-    public void close() {
-        Logger logger = Logger.getLogger(SocketServer.class.getName());
-        logger.info("Attempting to close server resources...");
 
-        try {
-            // Placeholder: when serverSocket and streams are added, they should be closed here.
-            logger.info("Server socket and streams closed successfully.");
-        } catch (Exception e) {
-            logger.log(Level.WARNING, "Error while closing server resources: " + e.getMessage(), e);
-        }
-
-        logger.info("Server shutdown complete.");
-    }
 }
