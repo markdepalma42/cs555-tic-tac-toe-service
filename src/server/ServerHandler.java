@@ -205,6 +205,22 @@ public class ServerHandler extends Thread {
      * when a client disconnects or when the server needs to terminate the connection.
      */
     public void close() {
+        LOGGER.info("Attempting to close client connection for user: {}", currentUsername);
+        try {
+            if (dataInputStream != null) {
+                dataInputStream.close();
+            }
+            if (dataOutputStream != null) {
+                dataOutputStream.close();
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+                LOGGER.info("Client socket closed successfully for user: {}", currentUsername);
+            }
+        } catch (IOException e) {
+            LOGGER.error("Error while closing client connection for {}: {}", currentUsername, e.getMessage(), e);
+        }
+        LOGGER.info("Handler shutdown complete for user: {}", currentUsername);
     }
 
     /**
