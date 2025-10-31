@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Closeable;
 import java.net.Socket;
 import model.Event;
 import socket.Request;
@@ -205,6 +206,27 @@ public class ServerHandler extends Thread {
      * when a client disconnects or when the server needs to terminate the connection.
      */
     public void close() {
+        LOGGER.info("Attempting to close client connection for user: {}", currentUsername);
+        quietClose(this.dataInputStream);
+        quietClose(this.dataOutputStream);
+        quietClose(this.socket);
+        LOGGER.info("Handler shutdown complete for user: {}", currentUsername);
+    }
+
+    /**
+     * Attempts to close any Closeable resource quietly.
+     * Logs a warning if an IOException occurs but does not interrupt the shutdown sequence.
+     *
+     * @param closeable the resource to close
+     */
+    private void quietClose(Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (IOException e) {
+            LOGGER.warn("Error closing an instance of {}.", closeable.getClass().getSimpleName(),  e);
+        }
     }
 
     /**
