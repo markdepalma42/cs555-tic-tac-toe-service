@@ -199,7 +199,7 @@ public class ServerHandler extends Thread {
             try {
                 // Read serialized request from client
                 String serializedRequest = dataInputStream.readUTF();
-                LOGGER.info("Received request: {}", serializedRequest);
+                LOGGER.debug("Received request: {}", serializedRequest);
 
                 // Deserialize request
                 Request request = gson.fromJson(serializedRequest, Request.class);
@@ -211,7 +211,7 @@ public class ServerHandler extends Thread {
                 String serializedResponse = gson.toJson(response);
                 dataOutputStream.writeUTF(serializedResponse);
                 dataOutputStream.flush();
-                LOGGER.info("Sent response: {}", serializedResponse);
+                LOGGER.debug("Sent response: {}", serializedResponse);
 
             } catch (EOFException e) {
                 // Client disconnected
