@@ -2,19 +2,17 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Closeable;
-import java.net.Socket;
-import model.Event;
+import socket.GamingResponse;
 import socket.Request;
 import socket.Response;
-import socket.GamingResponse;
 import socket.Response.ResponseStatus;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
+import java.io.*;
+import java.net.Socket;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -40,7 +38,7 @@ public class ServerHandler extends Thread {
      * This represents the current event state, starting with default values indicating no move has been made.
      */
     public static Event event = new Event(0, null, null, null, null, -1);
-    
+
     /**
      * Stores the client connection.
      */
@@ -69,7 +67,7 @@ public class ServerHandler extends Thread {
     /**
      * Default constructor that creates a ServerHandler instance.
      *
-     * @param socket The socket representing the client connection.
+     * @param socket   The socket representing the client connection.
      * @param username The username of the connected client.
      */
     public ServerHandler(Socket socket, String username) {
@@ -197,7 +195,39 @@ public class ServerHandler extends Thread {
      */
     @Override
     public void run() {
-        // Empty for now - will process client requests later
+        while (true) {
+            try {
+                // Read serialized request from client
+                String serializedRequest = dataInputStream.readUTF();
+                LOGGER.info("Received request: {}", serializedRequest);
+
+                // Deserialize request
+                Request request = gson.fromJson(serializedRequest, Request.class);
+
+                // Handle request and get response
+                Response response = handleRequest(request);
+
+                // Serialize and send response
+                String serializedResponse = gson.toJson(response);
+                dataOutputStream.writeUTF(serializedResponse);
+                dataOutputStream.flush();
+                LOGGER.info("Sent response: {}", serializedResponse);
+
+            } catch (EOFException e) {
+                // Client disconnected
+                LOGGER.info("Client disconnected.");
+                break;
+            } catch (IOException e) {
+                LOGGER.error("I/O error: ", e);
+                break;
+            } catch (JsonSyntaxException e) {
+                LOGGER.error("Invalid JSON format: ", e);
+                // Optionally send error response to client
+            } catch (Exception e) {
+                LOGGER.error("Unexpected error: ", e);
+            }
+        }
+        close();
     }
 
     /**
@@ -225,7 +255,7 @@ public class ServerHandler extends Thread {
                 closeable.close();
             }
         } catch (IOException e) {
-            LOGGER.warn("Error closing an instance of {}.", closeable.getClass().getSimpleName(),  e);
+            LOGGER.warn("Error closing an instance of {}.", closeable.getClass().getSimpleName(), e);
         }
     }
 
