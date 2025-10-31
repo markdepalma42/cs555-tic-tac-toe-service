@@ -237,7 +237,7 @@ public class ServerHandler extends Thread {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Failed to open streams: " + e.getMessage());
+            LOGGER.error("Failed to open streams: ", e);
         } finally {
             try {
                 clientSocket.close();
