@@ -198,54 +198,40 @@ public class ServerHandler extends Thread {
      */
     @Override
     public void run() {
-        try (
-                DataInputStream input = new DataInputStream(clientSocket.getInputStream());
-                DataOutputStream output = new DataOutputStream(clientSocket.getOutputStream())
-        ) {
-            Gson gson = new Gson();
 
-            while (true) {
-                try {
-                    // Read serialized request from client
-                    String serializedRequest = input.readUTF();
-                    LOGGER.info("Received request: {}", serializedRequest);
-
-                    // Deserialize request
-                    Request request = gson.fromJson(serializedRequest, Request.class);
-
-                    // Handle request and get response
-                    Response response = handleRequest(request);
-
-                    // Serialize and send response
-                    String serializedResponse = gson.toJson(response);
-                    output.writeUTF(serializedResponse);
-                    output.flush();
-                    LOGGER.info("Sent response: {}", serializedResponse);
-
-                } catch (EOFException e) {
-                    // Client disconnected
-                    LOGGER.info("Client disconnected.");
-                    break;
-                } catch (IOException e) {
-                    LOGGER.error("I/O error: ", e);
-                    break;
-                } catch (JsonSyntaxException e) {
-                    LOGGER.error("Invalid JSON format: ", e);
-                    // Optionally send error response to client
-                } catch (Exception e) {
-                    LOGGER.error("Unexpected error: ", e);
-                }
-            }
-        } catch (IOException e) {
-            LOGGER.error("Failed to open streams: ", e);
-        } finally {
+        while (true) {
             try {
-                clientSocket.close();
-                LOGGER.info("Socket closed.");
+                // Read serialized request from client
+                String serializedRequest = dataInputStream.readUTF();
+                LOGGER.info("Received request: {}", serializedRequest);
+
+                // Deserialize request
+                Request request = gson.fromJson(serializedRequest, Request.class);
+
+                // Handle request and get response
+                Response response = handleRequest(request);
+
+                // Serialize and send response
+                String serializedResponse = gson.toJson(response);
+                dataOutputStream.writeUTF(serializedResponse);
+                dataOutputStream.flush();
+                LOGGER.info("Sent response: {}", serializedResponse);
+
+            } catch (EOFException e) {
+                // Client disconnected
+                LOGGER.info("Client disconnected.");
+                break;
             } catch (IOException e) {
-                LOGGER.error("Error closing socket: ", e);
+                LOGGER.error("I/O error: ", e);
+                break;
+            } catch (JsonSyntaxException e) {
+                LOGGER.error("Invalid JSON format: ", e);
+                // Optionally send error response to client
+            } catch (Exception e) {
+                LOGGER.error("Unexpected error: ", e);
             }
         }
+        close();
     }
 
     /**
