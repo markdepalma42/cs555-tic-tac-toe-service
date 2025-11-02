@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.BindException;
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.SocketException;
 
 /**
@@ -110,6 +110,11 @@ public class SocketServer {
      * spawning ServerHandler threads for each connected client.
      */
     public void startAcceptingRequest() {
+        if (this.serverSocket == null) {
+            LOGGER.error("Cannot start accepting requests. Server has not been initialized.");
+            return;
+        }
+
         try {
             // Player 1 connection
             LOGGER.info("player 1 is connecting....");
