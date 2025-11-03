@@ -169,22 +169,23 @@ public class ServerHandler extends Thread {
     private GamingResponse handleRequestMove() {
         // Get the move from the static variable event
         int move = event.getMove();
+        String user = event.getTurn();
         GamingResponse response;
 
         // Check if there is a valid move made by the opponent, else set the move as -1
-        if (move == -1) {
+        if ((move == -1) || (user == null) || (user.equals(this.currentUsername))) {
             // No move available from opponent - create response with move = -1
             response = new GamingResponse(-1, true);
         } else {
             // Valid move available - create response with the actual move
             response = new GamingResponse(move, true);
+
+            // Delete the move once it is sent to the opponent
+            event.setMove(-1);
         }
 
         // Set the response status
         response.setStatus(ResponseStatus.SUCCESS);
-
-        // Delete the move once it is sent to the opponent
-        event.setMove(-1);
         return response;
     }
 
