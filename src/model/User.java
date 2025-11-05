@@ -93,7 +93,7 @@ public class User {
      *
      * @return true if the user is online, false otherwise
      */
-    public boolean getOnline() {
+    public boolean isOnline() {
         return online;
     }
 
