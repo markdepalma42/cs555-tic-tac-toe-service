@@ -12,6 +12,7 @@ import socket.Response;
 import socket.Response.ResponseStatus;
 
 import java.io.*;
+import java.sql.SQLException;
 import java.net.Socket;
 
 /**
@@ -34,10 +35,10 @@ public class ServerHandler extends Thread {
     private final Gson gson;
 
     /**
-     * Static Event variable initialized with default values and move set to -1.
-     * This represents the current event state, starting with default values indicating no move has been made.
+     * The eventId of the Event in the database that this handler is currently using for gameplay.
+     * Default value -1 indicates no current event has been set.
      */
-    public static Event event = new Event(0, null, null, null, null, -1);
+    private int currentEventId = -1;
 
     /**
      * Stores the client connection.
@@ -135,9 +136,8 @@ public class ServerHandler extends Thread {
     }
 
     /**
-     * Processes the move by updating the game state and ensuring valid turn order.
-     * This function sets the move and turn attributes of the static event variable
-     * and returns a standard Response with SUCCESS status and appropriate message.
+     * Handles SEND_MOVE requests by deserializing the move data from the request
+     * and delegating to the handleSendMove(move) function for processing.
      *
      * @param move the integer representing the move to be processed
      * @return a response indicating success or failure of the move
@@ -145,48 +145,87 @@ public class ServerHandler extends Thread {
     private Response handleSendMove(int move) {
         // Get the current username
         String currentUser = getCurrentUsername();
+        try {
+            // Retrieve the event from the database using currentEventId
+            Event event = DatabaseHelper.getInstance().getEvent(currentEventId);
+            if (event == null) {
+                LOGGER.warn("No event found for eventId {}", currentEventId);
+                return new Response(ResponseStatus.FAILURE, "No active game event found");
+            }
 
-        // Check to see if the last move was not made by the same user
-        if (event.getTurn() != null && event.getTurn().equals(currentUser)) {
-            return new Response(ResponseStatus.FAILURE, "Cannot make consecutive moves. Wait for opponent's move.");
+            // Check to see if the last move was not made by the same user
+            if (event.getTurn() != null && event.getTurn().equals(currentUser)) {
+                return new Response(ResponseStatus.FAILURE, "Cannot make consecutive moves. Wait for opponent's move.");
+            }
+
+            // Set the move and turn on the event and persist to DB
+            event.setMove(move);
+            event.setTurn(currentUser);
+            DatabaseHelper.getInstance().updateEvent(event);
+
+            // Return a standard Response with SUCCESS status and appropriate message
+            return new Response(ResponseStatus.SUCCESS, "Move " + move + " received successfully");
+        } catch (SQLException e) {
+            LOGGER.error("Database error while saving move", e);
+            return new Response(ResponseStatus.FAILURE, "Database error: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error while saving move", e);
+            return new Response(ResponseStatus.FAILURE, "Error processing move: " + e.getMessage());
         }
-
-        // Set the move and turn attribute of the static variable event
-        event.setMove(move);
-        event.setTurn(currentUser);
-
-        // Return a standard Response with SUCCESS status and appropriate message
-        return new Response(ResponseStatus.SUCCESS, "Move " + move + " received successfully");
     }
 
     /**
-     * Handles REQUEST_MOVE requests by retrieving the opponent's move from the static event.
-     * Returns a GamingResponse with the move or -1 if no move is available, and deletes
-     * the move after sending it to prevent duplicate processing.
+     * Processes the move by updating the game state and ensuring valid turn order.
+     * This method retrieves the corresponding {@link Event} from the database using
+     * the handler's {@code currentEventId}, validates turn order, sets the move and
+     * the current turn on that Event, and persists the change via
+     * {@link server.DatabaseHelper#updateEvent(Event)}.
      *
      * @return a GamingResponse containing the opponent's move and game status
      */
     private GamingResponse handleRequestMove() {
-        // Get the move from the static variable event
-        int move = event.getMove();
-        String user = event.getTurn();
-        GamingResponse response;
+        try {
+            Event event = DatabaseHelper.getInstance().getEvent(currentEventId);
+            GamingResponse response;
 
-        // Check if there is a valid move made by the opponent, else set the move as -1
-        if ((move == -1) || (user == null) || (user.equals(this.currentUsername))) {
-            // No move available from opponent - create response with move = -1
-            response = new GamingResponse(-1, true);
-        } else {
-            // Valid move available - create response with the actual move
-            response = new GamingResponse(move, true);
+            if (event == null) {
+                // No event found - return move = -1
+                response = new GamingResponse(-1, true);
+            } else {
+                int move = event.getMove();
+                String user = event.getTurn();
 
-            // Delete the move once it is sent to the opponent
-            event.setMove(-1);
+                // Check if there is a valid move made by the opponent, else set the move as -1
+                if ((move == -1) || (user == null) || (user.equals(this.currentUsername))) {
+                    // No move available from opponent - create response with move = -1
+                    response = new GamingResponse(-1, true);
+                } else {
+                    // Valid move available - create response with the actual move
+                    response = new GamingResponse(move, true);
+
+                    // Delete the move and clear turn once it is sent to the opponent and persist
+                    event.setMove(-1);
+                    event.setTurn(null);
+                    DatabaseHelper.getInstance().updateEvent(event);
+                }
+            }
+
+            // Set the response status
+            response.setStatus(ResponseStatus.SUCCESS);
+            return response;
+        } catch (SQLException e) {
+            LOGGER.error("Database error while requesting move", e);
+            GamingResponse response = new GamingResponse(-1, true);
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setMessage("Database error: " + e.getMessage());
+            return response;
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error while requesting move", e);
+            GamingResponse response = new GamingResponse(-1, true);
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setMessage("Error processing request: " + e.getMessage());
+            return response;
         }
-
-        // Set the response status
-        response.setStatus(ResponseStatus.SUCCESS);
-        return response;
     }
 
     /**
