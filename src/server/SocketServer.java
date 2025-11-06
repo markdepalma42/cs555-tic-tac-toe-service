@@ -106,8 +106,8 @@ public class SocketServer {
 
     /**
      * Starts the main server loop to accept incoming client connections.
-     * This method runs continuously, accepting new client connections and
-     * spawning ServerHandler threads for each connected client.
+     * This method runs continuously, accepting one new client connection
+     * in each loop iteration and spawning a new ServerHandler thread for it.
      */
     public void startAcceptingRequest() {
         if (this.serverSocket == null) {
@@ -115,25 +115,21 @@ public class SocketServer {
             return;
         }
 
+        LOGGER.info("Server is now accepting connections from multiple clients...");
+
         try {
-            // Player 1 connection
-            LOGGER.info("player 1 is connecting....");
-            Socket player1Socket = serverSocket.accept();
+            while (true) { // Infinite loop — server runs continuously
+                Socket clientSocket = serverSocket.accept();
+                LOGGER.info("New client connected from {}", clientSocket.getInetAddress());
 
-            ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
-            player1Handler.start();
+                // Create and start a handler for this client
+                ServerHandler handler = new ServerHandler(clientSocket, "Client-" + clientSocket.getPort());
+                handler.start();
 
-            // Player 2 connection
-            LOGGER.info("player 2 is connecting....");
-            Socket player2Socket = serverSocket.accept();
-
-            ServerHandler player2Handler = new ServerHandler(player2Socket, "Player2");
-            player2Handler.start();
-
-            LOGGER.info("Both players connected!");
-
+                LOGGER.info("Started ServerHandler for new client connection.");
+            }
         } catch (IOException e) {
-            LOGGER.error("Error accepting client connections", e);
+            LOGGER.error("Error while accepting client connections", e);
         }
     }
 
