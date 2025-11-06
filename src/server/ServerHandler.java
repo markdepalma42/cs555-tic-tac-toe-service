@@ -101,6 +101,15 @@ public class ServerHandler extends Thread {
                 return handleSendMoveRequest(request);
             case REQUEST_MOVE:
                 return handleRequestMove();
+            case LOGIN:
+            case REGISTER:
+            case UPDATE_PAIRING:
+            case SEND_INVITATION:
+            case ACCEPT_INVITATION:
+            case DECLINE_INVITATION:
+            case ACKNOWLEDGE_RESPONSE:
+            case ABORT_GAME:
+            case COMPLETE_GAME:
             default:
                 // Return failed response if neither of the two types is sent
                 LOGGER.warn("Unsupported request type: {}", request.getType());
