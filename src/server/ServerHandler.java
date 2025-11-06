@@ -136,9 +136,8 @@ public class ServerHandler extends Thread {
     }
 
     /**
-     * Processes the move by updating the game state and ensuring valid turn order.
-     * This function sets the move and turn attributes of the static event variable
-     * and returns a standard Response with SUCCESS status and appropriate message.
+     * Handles SEND_MOVE requests by deserializing the move data from the request
+     * and delegating to the handleSendMove(move) function for processing.
      *
      * @param move the integer representing the move to be processed
      * @return a response indicating success or failure of the move
@@ -176,9 +175,11 @@ public class ServerHandler extends Thread {
     }
 
     /**
-     * Handles REQUEST_MOVE requests by retrieving the opponent's move from the static event.
-     * Returns a GamingResponse with the move or -1 if no move is available, and deletes
-     * the move after sending it to prevent duplicate processing.
+     * Processes the move by updating the game state and ensuring valid turn order.
+     * This method retrieves the corresponding {@link Event} from the database using
+     * the handler's {@code currentEventId}, validates turn order, sets the move and
+     * the current turn on that Event, and persists the change via
+     * {@link server.DatabaseHelper#updateEvent(Event)}.
      *
      * @return a GamingResponse containing the opponent's move and game status
      */
