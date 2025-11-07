@@ -120,7 +120,7 @@ public class SocketServer {
         try {
             while (true) { // Infinite loop — server runs continuously
                 Socket clientSocket = serverSocket.accept();
-                LOGGER.info("New client connected from {}", clientSocket.getInetAddress());
+                LOGGER.info("New client connected from {}:{}", clientSocket.getInetAddress(), clientSocket.getPort());
 
                 // Create and start a handler for this client
                 ServerHandler handler = new ServerHandler(clientSocket, "Client-" + clientSocket.getPort());
