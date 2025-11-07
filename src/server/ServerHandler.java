@@ -100,7 +100,7 @@ public class ServerHandler extends Thread {
         // Use switch-case to decide among the two request types
         switch (request.getType()) {
             case REGISTER:
-                User user = gson.fromJson((String) request.getData(), User.class);
+                User user = gson.fromJson(request.getData(), User.class);
                 return handleRegister(user);
             case SEND_MOVE:
                 return handleSendMoveRequest(request);
