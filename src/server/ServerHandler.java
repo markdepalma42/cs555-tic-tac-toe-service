@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import model.Event;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import socket.GamingResponse;
@@ -98,6 +99,9 @@ public class ServerHandler extends Thread {
 
         // Use switch-case to decide among the two request types
         switch (request.getType()) {
+            case REGISTER:
+                User user = gson.fromJson(request.getData(), User.class);
+                return handleRegister(user);
             case SEND_MOVE:
                 return handleSendMoveRequest(request);
             case REQUEST_MOVE:
@@ -233,6 +237,32 @@ public class ServerHandler extends Thread {
             response.setStatus(ResponseStatus.FAILURE);
             response.setMessage("Error processing request: " + e.getMessage());
             return response;
+        }
+    }
+
+    /**
+     * Handles user registration request
+     *
+     * @param user The User object containing registration details
+     * @return Response indicating success or failure of registration
+     */
+    private Response handleRegister(User user) {
+        try {
+            // Check if username already exists in the database
+            if (DatabaseHelper.getInstance().isUsernameExists(user.getUsername())) {
+                return new Response(ResponseStatus.FAILURE, "Username '" + user.getUsername() + "' already exists. Please choose a different username.");
+            }
+
+            // Add the new user to the database
+            DatabaseHelper.getInstance().createUser(user);
+
+            return new Response(ResponseStatus.SUCCESS, "User '" + user.getUsername() + "' registered successfully!");
+        } catch (SQLException e) {
+            LOGGER.error("Database error during registration", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during registration: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during registration", e);
+            return new Response(ResponseStatus.FAILURE, "Error during registration: " + e.getMessage());
         }
     }
 
