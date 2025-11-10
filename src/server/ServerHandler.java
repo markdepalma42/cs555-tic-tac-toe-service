@@ -271,7 +271,7 @@ public class ServerHandler extends Thread {
     /**
      * After successful login, a user can now start requesting pairing updates
      *
-     * @return a PairingResponse containing available users, invitations, and responses, or a failure response if not logged in
+     * @return PairingResponse containing available users, invitations, responses, or a failure if not logged in
      */
     private PairingResponse handleUpdatePairing() {
         // checks to see if the user is logged in
@@ -302,7 +302,7 @@ public class ServerHandler extends Thread {
             return response;
         }
     }
-    
+
     /**
      * The main execution method that runs in a separate thread to handle client communication.
      * This method processes incoming client requests, executes appropriate business logic,
