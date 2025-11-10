@@ -49,7 +49,7 @@ public class ServerHandler extends Thread {
     /**
      * Stores the client's username.
      */
-    private final String currentUsername;
+    private String currentUsername;
 
     /**
      * Input stream for receiving data from the client.
@@ -107,6 +107,8 @@ public class ServerHandler extends Thread {
             case REQUEST_MOVE:
                 return handleRequestMove();
             case LOGIN:
+                User loginUser = gson.fromJson(request.getData(), User.class);
+                return handleLogin(loginUser);
             case UPDATE_PAIRING:
             case SEND_INVITATION:
             case ACCEPT_INVITATION:
@@ -263,6 +265,42 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during registration", e);
             return new Response(ResponseStatus.FAILURE, "Error during registration: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles user login request
+     *
+     * @param user The User object containing login credentials
+     * @return Response indicating success or failure of login
+     */
+    private Response handleLogin(User user) {
+        try {
+            // Get the user with the corresponding username from database
+            User dbUser = DatabaseHelper.getInstance().getUser(user.getUsername());
+
+            // Validate user exists
+            if (dbUser == null) {
+                return new Response(ResponseStatus.FAILURE, "Username '" + user.getUsername() + "' not found. Please register first.");
+            }
+
+            // Validate password is correct
+            if (!dbUser.getPassword().equals(user.getPassword())) {
+                return new Response(ResponseStatus.FAILURE, "Invalid password for user '" + user.getUsername() + "'.");
+            }
+
+            // All inputs are valid - set currentUsername, set user as online, and update database
+            this.currentUsername = user.getUsername();
+            dbUser.setOnline(true);
+            DatabaseHelper.getInstance().updateUser(dbUser);
+
+            return new Response(ResponseStatus.SUCCESS, "User '" + user.getUsername() + "' logged in successfully!");
+        } catch (SQLException e) {
+            LOGGER.error("Database error during login", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during login: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during login", e);
+            return new Response(ResponseStatus.FAILURE, "Error during login: " + e.getMessage());
         }
     }
 
