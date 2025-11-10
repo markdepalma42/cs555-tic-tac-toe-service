@@ -110,6 +110,7 @@ public class ServerHandler extends Thread {
                 return handleRequestMove();
             case LOGIN:
             case UPDATE_PAIRING:
+                return handleUpdatePairing();
             case SEND_INVITATION:
             case ACCEPT_INVITATION:
             case DECLINE_INVITATION:
