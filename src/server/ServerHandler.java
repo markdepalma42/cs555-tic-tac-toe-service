@@ -270,6 +270,7 @@ public class ServerHandler extends Thread {
 
     /**
      * Handles user login request
+     *
      * @param user The User object containing login credentials
      * @return Response indicating success or failure of login
      */
