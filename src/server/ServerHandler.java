@@ -48,7 +48,7 @@ public class ServerHandler extends Thread {
     /**
      * Stores the client's username.
      */
-    private final String currentUsername;
+    private String currentUsername;
 
     /**
      * Input stream for receiving data from the client.
@@ -69,11 +69,9 @@ public class ServerHandler extends Thread {
      * Default constructor that creates a ServerHandler instance.
      *
      * @param socket   The socket representing the client connection.
-     * @param username The username of the connected client.
      */
-    public ServerHandler(Socket socket, String username) {
+    public ServerHandler(Socket socket) {
         this.socket = socket;
-        this.currentUsername = username;
         this.gson = new GsonBuilder().serializeNulls().create();
 
         try {

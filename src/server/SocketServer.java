@@ -120,14 +120,14 @@ public class SocketServer {
             LOGGER.info("player 1 is connecting....");
             Socket player1Socket = serverSocket.accept();
 
-            ServerHandler player1Handler = new ServerHandler(player1Socket, "Player1");
+            ServerHandler player1Handler = new ServerHandler(player1Socket);
             player1Handler.start();
 
             // Player 2 connection
             LOGGER.info("player 2 is connecting....");
             Socket player2Socket = serverSocket.accept();
 
-            ServerHandler player2Handler = new ServerHandler(player2Socket, "Player2");
+            ServerHandler player2Handler = new ServerHandler(player2Socket);
             player2Handler.start();
 
             LOGGER.info("Both players connected!");
