@@ -112,6 +112,8 @@ public class ServerHandler extends Thread {
             case ACCEPT_INVITATION:
             case DECLINE_INVITATION:
             case ACKNOWLEDGE_RESPONSE:
+                int eventId = Integer.parseInt(request.getData());
+                return handleAcknowledgeResponse(eventId);
             case ABORT_GAME:
             case COMPLETE_GAME:
             default:
@@ -299,6 +301,61 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during login", e);
             return new Response(ResponseStatus.FAILURE, "Error during login: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles acknowledge response request after an invitation response
+     *
+     * @param eventId The eventId of the initial invitation
+     * @return Response indicating success or failure of acknowledgment
+     */
+    private Response handleAcknowledgeResponse(int eventId) {
+        try {
+            // Use the database helper function getEvent() to retrieve the Event object
+            Event event = DatabaseHelper.getInstance().getEvent(eventId);
+
+            // Case 1: Check if the event exists, and if the sender of the event is the current username
+            if (event == null) {
+                return new Response(ResponseStatus.FAILURE, "Event with ID " + eventId + " not found.");
+            }
+
+            if (!event.getSender().equals(this.currentUsername)) {
+                return new Response(ResponseStatus.FAILURE, "You are not the sender of this invitation.");
+            }
+
+            // Get the current status of the event
+            Event.EventStatus currentStatus = event.getStatus();
+
+            // Case 2: If the response was DECLINED, set the status to ABORTED
+            if (currentStatus == Event.EventStatus.DECLINED) {
+                event.setStatus(Event.EventStatus.ABORTED);
+                DatabaseHelper.getInstance().updateEvent(event);
+                return new Response(ResponseStatus.SUCCESS, "Game invitation declined and aborted successfully.");
+            } else if (currentStatus == Event.EventStatus.ACCEPTED) {
+                // Case 3: If the response was ACCEPTED
+
+                // Set currentEventId to eventId
+                this.currentEventId = eventId;
+
+                // Abort any other pending invitation the user might have from other players
+                DatabaseHelper.getInstance().abortAllUserEvents(this.currentUsername);
+
+                // Update the event status to PLAYING
+                event.setStatus(Event.EventStatus.PLAYING);
+                DatabaseHelper.getInstance().updateEvent(event);
+
+                return new Response(ResponseStatus.SUCCESS, "Game invitation accepted! Game is now starting.");
+            } else {
+                return new Response(ResponseStatus.FAILURE, "Invalid event status for acknowledgment: " + currentStatus);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Database error during acknowledge response", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during acknowledge response: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during acknowledge response", e);
+            return new Response(ResponseStatus.FAILURE, "Error during acknowledge response: " + e.getMessage());
         }
     }
 
