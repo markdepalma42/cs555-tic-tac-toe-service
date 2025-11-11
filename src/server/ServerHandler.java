@@ -338,7 +338,6 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during login", e);
             return new Response(ResponseStatus.FAILURE, "Error during login: " + e.getMessage());
-
         }
     }
 
