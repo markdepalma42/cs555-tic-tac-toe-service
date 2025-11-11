@@ -4,11 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.BindException;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
+import java.net.*;
 
 /**
  * The main socket server controller class for the TicTacToe game server.
@@ -123,7 +119,7 @@ public class SocketServer {
                 LOGGER.info("New client connected from {}:{}", clientSocket.getInetAddress(), clientSocket.getPort());
 
                 // Create and start a handler for this client
-                ServerHandler handler = new ServerHandler(clientSocket, "Client-" + clientSocket.getPort());
+                ServerHandler handler = new ServerHandler(clientSocket);
                 handler.start();
 
                 LOGGER.info("Started ServerHandler for new client connection.");

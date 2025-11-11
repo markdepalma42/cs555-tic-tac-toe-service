@@ -13,8 +13,8 @@ import socket.Response;
 import socket.Response.ResponseStatus;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -69,12 +69,10 @@ public class ServerHandler extends Thread {
     /**
      * Default constructor that creates a ServerHandler instance.
      *
-     * @param socket   The socket representing the client connection.
-     * @param username The username of the connected client.
+     * @param socket The socket representing the client connection.
      */
-    public ServerHandler(Socket socket, String username) {
+    public ServerHandler(Socket socket) {
         this.socket = socket;
-        this.currentUsername = username;
         this.gson = new GsonBuilder().serializeNulls().create();
 
         try {
