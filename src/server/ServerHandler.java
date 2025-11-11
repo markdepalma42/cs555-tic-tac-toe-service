@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import socket.GamingResponse;
 import socket.Request;
-
 import socket.Response;
 import socket.Response.ResponseStatus;
 
