@@ -14,9 +14,9 @@ import socket.Response.ResponseStatus;
 import socket.PairingResponse;
 
 import java.io.*;
-import java.sql.SQLException;
 import java.net.Socket;
 import java.util.List;
+import java.sql.SQLException;
 
 /**
  * Handles I/O communication between the server and a single client connection.
@@ -51,7 +51,7 @@ public class ServerHandler extends Thread {
     /**
      * Stores the client's username.
      */
-    private final String currentUsername;
+    private String currentUsername;
 
     /**
      * Input stream for receiving data from the client.
@@ -71,12 +71,10 @@ public class ServerHandler extends Thread {
     /**
      * Default constructor that creates a ServerHandler instance.
      *
-     * @param socket   The socket representing the client connection.
-     * @param username The username of the connected client.
+     * @param socket The socket representing the client connection.
      */
-    public ServerHandler(Socket socket, String username) {
+    public ServerHandler(Socket socket) {
         this.socket = socket;
-        this.currentUsername = username;
         this.gson = new GsonBuilder().serializeNulls().create();
 
         try {
@@ -109,6 +107,8 @@ public class ServerHandler extends Thread {
             case REQUEST_MOVE:
                 return handleRequestMove();
             case LOGIN:
+                User loginUser = gson.fromJson(request.getData(), User.class);
+                return handleLogin(loginUser);
             case UPDATE_PAIRING:
                 return handleUpdatePairing();
             case SEND_INVITATION:
@@ -270,6 +270,7 @@ public class ServerHandler extends Thread {
     }
 
     /**
+<<<<<<< HEAD
      * After successful login, a user can now start requesting pairing updates
      *
      * @return PairingResponse containing available users, invitations, responses, or a failure if not logged in
@@ -301,6 +302,43 @@ public class ServerHandler extends Thread {
             response.setStatus(ResponseStatus.FAILURE);
             response.setMessage("error while retrieving pairing information: " + e.getMessage());
             return response;
+        }
+    }
+
+    /**
+     * Handles user login request
+     *
+     * @param user The User object containing login credentials
+     * @return Response indicating success or failure of login
+     */
+    private Response handleLogin(User user) {
+        try {
+            // Get the user with the corresponding username from database
+            User dbUser = DatabaseHelper.getInstance().getUser(user.getUsername());
+
+            // Validate user exists
+            if (dbUser == null) {
+                return new Response(ResponseStatus.FAILURE, "Username '" + user.getUsername() + "' not found. Please register first.");
+            }
+
+            // Validate password is correct
+            if (!dbUser.getPassword().equals(user.getPassword())) {
+                return new Response(ResponseStatus.FAILURE, "Invalid password for user '" + user.getUsername() + "'.");
+            }
+
+            // All inputs are valid - set currentUsername, set user as online, and update database
+            this.currentUsername = user.getUsername();
+            dbUser.setOnline(true);
+            DatabaseHelper.getInstance().updateUser(dbUser);
+
+            return new Response(ResponseStatus.SUCCESS, "User '" + user.getUsername() + "' logged in successfully!");
+        } catch (SQLException e) {
+            LOGGER.error("Database error during login", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during login: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during login", e);
+            return new Response(ResponseStatus.FAILURE, "Error during login: " + e.getMessage());
+
         }
     }
 
