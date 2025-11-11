@@ -270,7 +270,6 @@ public class ServerHandler extends Thread {
     }
 
     /**
-<<<<<<< HEAD
      * After successful login, a user can now start requesting pairing updates
      *
      * @return PairingResponse containing available users, invitations, responses, or a failure if not logged in
