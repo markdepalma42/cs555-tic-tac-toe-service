@@ -118,7 +118,9 @@ public class ServerHandler extends Thread {
                 int eventId = Integer.parseInt(request.getData());
                 return handleAcknowledgeResponse(eventId);
             case ABORT_GAME:
+                return handleAbortGame();
             case COMPLETE_GAME:
+                return handleCompleteGame();
             default:
                 // Return failed response if neither of the two types is sent
                 LOGGER.warn("Unsupported request type: {}", request.getType());
@@ -394,6 +396,80 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during acknowledge response", e);
             return new Response(ResponseStatus.FAILURE, "Error during acknowledge response: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles complete game request when players finish a game
+     *
+     * @return Response indicating success or failure of completing the game
+     */
+    private Response handleCompleteGame() {
+        try {
+            // Use the database helper function getEvent() to retrieve the Event object
+            Event event = DatabaseHelper.getInstance().getEvent(currentEventId);
+
+            // Check if the event exists and the status is PLAYING
+            if (event == null) {
+                return new Response(ResponseStatus.FAILURE, "No active game event found.");
+            }
+
+            if (event.getStatus() != Event.EventStatus.PLAYING) {
+                return new Response(ResponseStatus.FAILURE, "Game is not in playing status. Current status: " + event.getStatus());
+            }
+
+            // Change the status to COMPLETED
+            event.setStatus(Event.EventStatus.COMPLETED);
+            DatabaseHelper.getInstance().updateEvent(event);
+
+            // Reset currentEventId to -1
+            this.currentEventId = -1;
+
+            return new Response(ResponseStatus.SUCCESS, "Game completed successfully!");
+
+        } catch (SQLException e) {
+            LOGGER.error("Database error during complete game", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during complete game: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during complete game", e);
+            return new Response(ResponseStatus.FAILURE, "Error during complete game: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles abort game request when a player aborts a game in progress
+     *
+     * @return Response indicating success or failure of aborting the game
+     */
+    private Response handleAbortGame() {
+        try {
+            // Use the database helper function getEvent() to retrieve the Event object
+            Event event = DatabaseHelper.getInstance().getEvent(currentEventId);
+
+            // Check if the event exists and the status is PLAYING
+            if (event == null) {
+                return new Response(ResponseStatus.FAILURE, "No active game event found.");
+            }
+
+            if (event.getStatus() != Event.EventStatus.PLAYING) {
+                return new Response(ResponseStatus.FAILURE, "Game is not in playing status. Current status: " + event.getStatus());
+            }
+
+            // Change the status to ABORTED
+            event.setStatus(Event.EventStatus.ABORTED);
+            DatabaseHelper.getInstance().updateEvent(event);
+
+            // Reset currentEventId to -1
+            this.currentEventId = -1;
+
+            return new Response(ResponseStatus.SUCCESS, "Game aborted successfully!");
+
+        } catch (SQLException e) {
+            LOGGER.error("Database error during abort game", e);
+            return new Response(ResponseStatus.FAILURE, "Database error during abort game: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error during abort game", e);
+            return new Response(ResponseStatus.FAILURE, "Error during abort game: " + e.getMessage());
         }
     }
 
