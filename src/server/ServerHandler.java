@@ -11,9 +11,11 @@ import socket.GamingResponse;
 import socket.Request;
 import socket.Response;
 import socket.Response.ResponseStatus;
+import socket.PairingResponse;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.sql.SQLException;
 
 /**
@@ -108,6 +110,7 @@ public class ServerHandler extends Thread {
                 User loginUser = gson.fromJson(request.getData(), User.class);
                 return handleLogin(loginUser);
             case UPDATE_PAIRING:
+                return handleUpdatePairing();
             case SEND_INVITATION:
             case ACCEPT_INVITATION:
             case DECLINE_INVITATION:
@@ -265,6 +268,41 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during registration", e);
             return new Response(ResponseStatus.FAILURE, "Error during registration: " + e.getMessage());
+        }
+    }
+
+    /**
+     * After successful login, a user can now start requesting pairing updates
+     *
+     * @return PairingResponse containing available users, invitations, responses, or a failure if not logged in
+     */
+    private PairingResponse handleUpdatePairing() {
+        // checks to see if the user is logged in
+        if (currentUsername == null || currentUsername.isEmpty()) {
+            PairingResponse response = new PairingResponse(null, null, null);
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setMessage("user is not logged in");
+            return response;
+        }
+
+        try {
+            // retrieve pairing information
+            List<User> availableUsers = DatabaseHelper.getInstance().getAvailableUsers(currentUsername);
+            Event userInvitation = DatabaseHelper.getInstance().getUserInvitation(currentUsername);
+            Event userInvitationResponse = DatabaseHelper.getInstance().getUserInvitationResponse(currentUsername);
+
+            // create and return PairingResponse
+            PairingResponse response = new PairingResponse(availableUsers, userInvitation, userInvitationResponse);
+            response.setStatus(ResponseStatus.SUCCESS);
+            response.setMessage("pairing information retrieved successfully");
+            return response;
+
+        } catch (Exception e) {
+            LOGGER.error("error while retrieving pairing information", e);
+            PairingResponse response = new PairingResponse(null, null, null);
+            response.setStatus(ResponseStatus.FAILURE);
+            response.setMessage("error while retrieving pairing information: " + e.getMessage());
+            return response;
         }
     }
 
