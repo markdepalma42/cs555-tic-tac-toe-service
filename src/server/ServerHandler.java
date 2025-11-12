@@ -522,6 +522,33 @@ public class ServerHandler extends Thread {
      */
     public void close() {
         LOGGER.info("Attempting to close client connection for user: {}", currentUsername);
+
+        // Update user offline status and abort events when user disconnects
+        if (this.currentUsername != null) {
+            try {
+                // Get the User object corresponding to the currentUsername
+                User user = DatabaseHelper.getInstance().getUser(this.currentUsername);
+
+                if (user != null) {
+                    // Set the user online attribute to false
+                    user.setOnline(false);
+
+                    // Update the user in the database
+                    DatabaseHelper.getInstance().updateUser(user);
+
+                    // Abort any event that is not either COMPLETED or ABORTED
+                    DatabaseHelper.getInstance().abortAllUserEvents(this.currentUsername);
+
+                    LOGGER.info("User '{}' set to offline and events aborted", this.currentUsername);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Database error while updating user offline status", e);
+            } catch (Exception e) {
+                LOGGER.error("Unexpected error while updating user offline status", e);
+            }
+        }
+
+        // Close all streams and socket
         quietClose(this.dataInputStream);
         quietClose(this.dataOutputStream);
         quietClose(this.socket);
