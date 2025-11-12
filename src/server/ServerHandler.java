@@ -311,6 +311,10 @@ public class ServerHandler extends Thread {
     /**
      * Handles the acceptance of a pending game invitation by the opponent.
      * This method retrieves the event associated with the given {@code eventId}
+     *
+     * @param eventId the unique identifier of the event (invitation) to be accepted
+     * @return a {@link Response} object indicating whether the acceptance was successful or failed,
+     * with an appropriate message
      */
 
     public Response handleAcceptInvitation(int eventId) throws SQLException {
