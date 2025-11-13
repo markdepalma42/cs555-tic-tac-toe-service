@@ -274,7 +274,7 @@ public class ServerHandler extends Thread {
     }
 
     /**
-     * handles SEND_INVITATION requests when a user selects an opponent to invite.
+     * Handles SEND_INVITATION requests when a user selects an opponent to invite.
      *
      * @param opponent the username of the player to invite
      * @return response indicating success or failure
