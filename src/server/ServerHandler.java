@@ -517,8 +517,13 @@ public class ServerHandler extends Thread {
 
     /**
      * Closes the client connection and releases all associated resources.
-     * This method ensures proper cleanup of sockets, streams, and other resources
-     * when a client disconnects or when the server needs to terminate the connection.
+     * <p>
+     * This method performs cleanup operations including setting the user's online status
+     * to offline, aborting any active user events, and closing all I/O streams and sockets.
+     * Database operations are skipped if no user is currently authenticated.
+     * <p>
+     * The method handles exceptions gracefully during cleanup to ensure all resources
+     * are properly released even if individual operations fail.
      */
     public void close() {
         LOGGER.info("Attempting to close client connection for user: {}", currentUsername);
