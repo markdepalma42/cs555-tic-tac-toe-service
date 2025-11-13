@@ -517,11 +517,43 @@ public class ServerHandler extends Thread {
 
     /**
      * Closes the client connection and releases all associated resources.
-     * This method ensures proper cleanup of sockets, streams, and other resources
-     * when a client disconnects or when the server needs to terminate the connection.
+     * <p>
+     * This method performs cleanup operations including setting the user's online status
+     * to offline, aborting any active user events, and closing all I/O streams and sockets.
+     * Database operations are skipped if no user is currently authenticated.
+     * <p>
+     * The method handles exceptions gracefully during cleanup to ensure all resources
+     * are properly released even if individual operations fail.
      */
     public void close() {
         LOGGER.info("Attempting to close client connection for user: {}", currentUsername);
+
+        // Update user offline status and abort events when user disconnects
+        if (this.currentUsername != null) {
+            try {
+                // Get the User object corresponding to the currentUsername
+                User user = DatabaseHelper.getInstance().getUser(this.currentUsername);
+
+                if (user != null) {
+                    // Set the user online attribute to false
+                    user.setOnline(false);
+
+                    // Update the user in the database
+                    DatabaseHelper.getInstance().updateUser(user);
+
+                    // Abort any event that is not either COMPLETED or ABORTED
+                    DatabaseHelper.getInstance().abortAllUserEvents(this.currentUsername);
+
+                    LOGGER.info("User '{}' set to offline and events aborted", this.currentUsername);
+                }
+            } catch (SQLException e) {
+                LOGGER.error("Database error while updating user offline status", e);
+            } catch (Exception e) {
+                LOGGER.error("Unexpected error while updating user offline status", e);
+            }
+        }
+
+        // Close all streams and socket
         quietClose(this.dataInputStream);
         quietClose(this.dataOutputStream);
         quietClose(this.socket);
