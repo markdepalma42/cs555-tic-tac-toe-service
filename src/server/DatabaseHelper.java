@@ -373,7 +373,7 @@ public class DatabaseHelper {
      * @param username The username of the user
      * @throws SQLException if database error occurs
      */
-    public static void abortAllUserEvents(String username) throws SQLException {
+    public void abortAllUserEvents(String username) throws SQLException {
         PreparedStatement statement = connection.prepareStatement(
                 "UPDATE " + TABLE_EVENT +
                         " SET " + COL_STATUS + " = ?" +

@@ -113,6 +113,7 @@ public class ServerHandler extends Thread {
                 return handleUpdatePairing();
             case SEND_INVITATION:
             case ACCEPT_INVITATION:
+                return handleAcceptInvitation(Integer.parseInt(request.getData()));
             case DECLINE_INVITATION:
             case ACKNOWLEDGE_RESPONSE:
                 int eventId = Integer.parseInt(request.getData());
@@ -317,37 +318,45 @@ public class ServerHandler extends Thread {
      * with an appropriate message
      */
 
-    public Response handleAcceptInvitation(int eventId) throws SQLException {
-        // Retrieve the event from the database
-        Event event = DatabaseHelper.getInstance().getEvent(currentEventId);
+    public Response handleAcceptInvitation(int eventId) {
+        try {
+            // Retrieve the event from the database
+            Event event = DatabaseHelper.getInstance().getEvent(eventId);
 
-        // Check if the event exists
-        if (event == null) {
-            return new Response(ResponseStatus.FAILURE, "Event not found.");
+            // Check if the event exists
+            if (event == null) {
+                return new Response(ResponseStatus.FAILURE, "Event not found.");
+            }
+
+            // Check if the event is still pending
+            if (event.getStatus() != Event.EventStatus.PENDING) {
+                return new Response(ResponseStatus.FAILURE, "This invitation is no longer available.");
+            }
+
+            // Check if the opponent is the current user
+            if (!event.getOpponent().equals(currentUsername)) {
+                return new Response(ResponseStatus.FAILURE, "You are not authorized to accept this invitation.");
+            }
+
+            // Abort any other pending invitations for this user
+            DatabaseHelper.getInstance().abortAllUserEvents(currentUsername);
+
+            // Update event status to ACCEPTED
+            event.setStatus(Event.EventStatus.ACCEPTED);
+            DatabaseHelper.getInstance().updateEvent(event);
+
+            // Set current event ID
+            currentEventId = eventId;
+
+            // Return success message
+            return new Response(ResponseStatus.SUCCESS, "Invitation accepted successfully.");
+        } catch (SQLException e) {
+            LOGGER.error("Database error while accepting invitation", e);
+            return new Response(ResponseStatus.FAILURE, "Database error while accepting invitation: " + e.getMessage());
+        } catch (Exception e) {
+            LOGGER.error("Unexpected error while accepting invitation", e);
+            return new Response(ResponseStatus.FAILURE, "Error while accepting invitation: " + e.getMessage());
         }
-
-        // Check if the event is still pending
-        if (!event.getStatus().equals("PENDING")) {
-            return new Response(ResponseStatus.FAILURE, "This invitation is no longer available.");
-        }
-
-        // Check if the opponent is the current user
-        if (!event.getOpponent().equals(currentUsername)) {
-            return new Response(ResponseStatus.FAILURE, "You are not authorized to accept this invitation.");
-        }
-
-        // Abort any other pending invitations for this user
-        DatabaseHelper.abortAllUserEvents(currentUsername);
-
-        // Update event status to ACCEPTED
-        event.setStatus(Event.EventStatus.valueOf("ACCEPTED"));
-        DatabaseHelper.getInstance().updateEvent(event);
-
-        // Set current event ID
-        currentEventId = eventId;
-
-        // Return success message
-        return new Response(ResponseStatus.SUCCESS, "Invitation accepted successfully.");
     }
 
     /**
