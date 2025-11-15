@@ -112,6 +112,8 @@ public class ServerHandler extends Thread {
             case UPDATE_PAIRING:
                 return handleUpdatePairing();
             case SEND_INVITATION:
+                String opponent = request.getData();
+                return handleSendInvitation(opponent);
             case ACCEPT_INVITATION:
                 return handleAcceptInvitation(Integer.parseInt(request.getData()));
             case DECLINE_INVITATION:
@@ -271,6 +273,40 @@ public class ServerHandler extends Thread {
         } catch (Exception e) {
             LOGGER.error("Unexpected error during registration", e);
             return new Response(ResponseStatus.FAILURE, "Error during registration: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles SEND_INVITATION requests when a user selects an opponent to invite.
+     *
+     * @param opponent the username of the player to invite
+     * @return response indicating success or failure
+     */
+    private Response handleSendInvitation(String opponent) {
+        // check if user is logged in
+        if (currentUsername == null || currentUsername.isEmpty()) {
+            return new Response(ResponseStatus.FAILURE, "user is not logged in");
+        }
+
+        try {
+            // check if opponent is available to receive an invitation
+            if (!DatabaseHelper.getInstance().isUserAvailable(opponent)) {
+                return new Response(ResponseStatus.FAILURE, "opponent is not available");
+            }
+
+            Event event = new Event();
+            event.setSender(currentUsername);
+            event.setOpponent(opponent);
+            event.setStatus(Event.EventStatus.PENDING);
+            event.setMove(-1);
+
+            // save event to database
+            DatabaseHelper.getInstance().createEvent(event);
+
+            return new Response(ResponseStatus.SUCCESS, "invitation sent successfully");
+        } catch (Exception e) {
+            LOGGER.error("error sending invitation", e);
+            return new Response(ResponseStatus.FAILURE, "error message: " + e.getMessage());
         }
     }
 
