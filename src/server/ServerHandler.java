@@ -115,6 +115,7 @@ public class ServerHandler extends Thread {
             case ACCEPT_INVITATION:
                 return handleAcceptInvitation(Integer.parseInt(request.getData()));
             case DECLINE_INVITATION:
+                return handleDeclineInvitation(Integer.parseInt(request.getData()));
             case ACKNOWLEDGE_RESPONSE:
                 int eventId = Integer.parseInt(request.getData());
                 return handleAcknowledgeResponse(eventId);
@@ -358,6 +359,40 @@ public class ServerHandler extends Thread {
             return new Response(ResponseStatus.FAILURE, "Error while accepting invitation: " + e.getMessage());
         }
     }
+
+    /**
+     * Handles DECLINE_INVITATION by validating the invitation and marking it as DECLINED.
+     *
+     * @param eventId the ID of the invitation to decline
+     * @return a Response indicating success or failure
+     */
+    private Response handleDeclineInvitation(int eventId) {
+        try {
+            Event event = DatabaseHelper.getInstance().getEvent(eventId);
+
+            if (event == null) {
+                return new Response(ResponseStatus.FAILURE, "Event with ID " + eventId + " does not exist.");
+            }
+
+            if (event.getStatus() != Event.EventStatus.PENDING) {
+                return new Response(ResponseStatus.FAILURE, "Only pending invitations can be declined.");
+            }
+
+            if (!event.getOpponent().equals(currentUsername)) {
+                return new Response(ResponseStatus.FAILURE, "You are not authorized to decline this invitation.");
+            }
+
+            event.setStatus(Event.EventStatus.DECLINED);
+            DatabaseHelper.getInstance().updateEvent(event);
+
+            return new Response(ResponseStatus.SUCCESS, "Invitation declined successfully.");
+
+        } catch (SQLException e) {
+            LOGGER.error("Database error while declining invitation", e);
+            return new Response(ResponseStatus.FAILURE, "Database error while declining invitation: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Handles user login request
