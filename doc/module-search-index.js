@@ -1,1 +1,1 @@
-moduleSearchIndex = [];updateSearchResults();
+moduleSearchIndex = [{"l":"com.google.gson"}];updateSearchResults();

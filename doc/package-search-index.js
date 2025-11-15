@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"model"},{"l":"server"},{"l":"socket"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.google.gson","l":"model"},{"m":"com.google.gson","l":"server"},{"m":"com.google.gson","l":"socket"}];updateSearchResults();
