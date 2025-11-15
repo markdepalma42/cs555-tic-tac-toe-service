@@ -261,6 +261,7 @@ public class ServerHandler extends Thread {
             return response;
         }
     }
+    
     /**
      * Handles user registration request
      *
